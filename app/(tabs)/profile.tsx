@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Platform } from 'react-native';
-import { useLogiTrack } from '../../store/logitrack-store';
-import { Colors } from '../../constants/theme';
-import { IconSymbol } from '../../components/ui/icon-symbol';
+import { useLogiTrack } from '@/store/logitrack-store';
+import { Colors } from '@/constants/theme';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function ProfileScreen() {
   const { activeRole, switchRole, riderStats, shipments, resetStore } = useLogiTrack();

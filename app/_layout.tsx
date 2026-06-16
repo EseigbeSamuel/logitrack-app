@@ -5,7 +5,7 @@ import "react-native-reanimated";
 import "../global.css";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { LogiTrackProvider } from "../store/logitrack-store";
+import { LogiTrackProvider } from "@/store/logitrack-store";
 
 export const unstable_settings = {
   anchor: "(tabs)",

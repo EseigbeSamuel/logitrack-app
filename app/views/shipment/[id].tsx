@@ -8,8 +8,8 @@ import {
   Text,
   View,
 } from "react-native";
-import { IconSymbol } from "../../components/ui/icon-symbol";
-import { ShipmentStatus, useLogiTrack } from "../../store/logitrack-store";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { ShipmentStatus, useLogiTrack } from "@/store/logitrack-store";
 
 export default function ShipmentDetailScreen() {
   const router = useRouter();
@@ -66,7 +66,6 @@ export default function ShipmentDetailScreen() {
       year: "numeric",
     });
   };
-
 
   // Transition driver buttons
   const getDriverAction = () => {
@@ -212,7 +211,9 @@ export default function ShipmentDetailScreen() {
         {shipment.notes ? (
           <View style={styles.instructionsBox}>
             <Text style={styles.instructionsHeader}>HANDLING INSTRUCTIONS</Text>
-            <Text style={styles.instructionsText}>&quot;{shipment.notes}&quot;</Text>
+            <Text style={styles.instructionsText}>
+              &quot;{shipment.notes}&quot;
+            </Text>
           </View>
         ) : null}
       </View>

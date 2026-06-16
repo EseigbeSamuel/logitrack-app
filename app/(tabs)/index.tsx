@@ -10,8 +10,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useLogiTrack, Shipment } from '../../store/logitrack-store';
-import { IconSymbol } from '../../components/ui/icon-symbol';
+import { useLogiTrack, Shipment } from '@/store/logitrack-store';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function HomeScreen() {
   const router = useRouter();

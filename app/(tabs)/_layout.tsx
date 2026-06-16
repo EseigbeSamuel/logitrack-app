@@ -1,15 +1,15 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from "expo-router";
+import React from "react";
+import { Platform } from "react-native";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from "@/components/haptic-tab";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'dark'];
+  const themeColors = Colors[colorScheme ?? "dark"];
 
   return (
     <Tabs
@@ -19,37 +19,44 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: '#1E1E20', // Custom dark theme tabbar
-          borderTopColor: '#2D2D30',
+          backgroundColor: "#1E1E20", // Custom dark theme tabbar
+          borderTopColor: "#2D2D30",
           borderTopWidth: 1.5,
           paddingTop: 8,
-          height: Platform.OS === 'ios' ? 88 : 64,
+          height: Platform.OS === "ios" ? 88 : 64,
         },
         tabBarLabelStyle: {
-          fontWeight: '700',
+          fontWeight: "700",
           fontSize: 11,
-          fontFamily: Platform.OS === 'ios' ? 'System' : 'normal',
+          fontFamily: Platform.OS === "ios" ? "System" : "normal",
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
-          tabBarIcon: ({ color }) => <IconSymbol size={24} name="house.fill" color={color} />,
+          title: "Home",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="house.fill" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="shipments"
         options={{
-          title: 'Logistics',
-          tabBarIcon: ({ color }) => <IconSymbol size={24} name="shippingbox.fill" color={color} />,
+          title: "Logistics",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="shippingbox.fill" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Terminal',
-          tabBarIcon: ({ color }) => <IconSymbol size={24} name="person.fill" color={color} />,
+          title: "Terminal",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="person.fill" color={color} />
+          ),
         }}
       />
     </Tabs>
