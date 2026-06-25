@@ -12,10 +12,13 @@ import {
 import { useRouter } from 'expo-router';
 import { useLogiTrack, Shipment } from '@/store/logitrack-store';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { activeRole, shipments, riderStats, toggleOnline, updateShipmentStatus } = useLogiTrack();
+  const theme = useThemeColors();
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
 
   const [searchId, setSearchId] = useState('');
 
@@ -24,7 +27,7 @@ export default function HomeScreen() {
     const formattedId = searchId.trim().toUpperCase();
     const found = shipments.find((s) => s.id === formattedId);
     if (found) {
-      router.push(`/shipment/${found.id}` as any);
+      router.push(`/views/shipment/${found.id}` as any);
       setSearchId('');
     } else {
       alert(`Logistics route '${formattedId}' not found in active registries.`);
@@ -75,7 +78,7 @@ export default function HomeScreen() {
                 value={searchId}
                 onChangeText={setSearchId}
                 placeholder="ENTER ID (E.G. LT-1029)"
-                placeholderTextColor="#71717A"
+                placeholderTextColor={theme.muted}
                 autoCapitalize="characters"
                 onSubmitEditing={handleSearch}
               />
@@ -87,15 +90,15 @@ export default function HomeScreen() {
 
           {/* Quick Actions & Metrics */}
           <View style={styles.statsRow}>
-            <View style={[styles.statItem, { backgroundColor: '#27272A' }]}>
+            <View style={[styles.statItem, { backgroundColor: theme.card }]}>
               <Text style={styles.statLabel}>IN-ROUTE CARGO</Text>
               <Text style={[styles.statValue, styles.monoText]}>
                 {activeCustomerShipments.length}
               </Text>
             </View>
-            <View style={[styles.statItem, { backgroundColor: '#27272A' }]}>
+            <View style={[styles.statItem, { backgroundColor: theme.card }]}>
               <Text style={styles.statLabel}>COMPLETED RUNS</Text>
-              <Text style={[styles.statValue, styles.monoText, { color: '#10B981' }]}>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.success }]}>
                 {completedCustomerShipments.length}
               </Text>
             </View>
@@ -104,7 +107,7 @@ export default function HomeScreen() {
           {/* Book Cargo CTA */}
           <Pressable
             style={styles.bookCtaButton}
-            onPress={() => router.push('/book-shipment' as any)}
+            onPress={() => router.push('/views/book-shipment' as any)}
           >
             <IconSymbol name="plus.circle.fill" size={20} color="#18181B" />
             <Text style={styles.bookCtaText}>SCHEDULE NEW CARGO DELIVERY</Text>
@@ -140,8 +143,8 @@ export default function HomeScreen() {
 
               {/* Driver Courier Pin */}
               <View style={[styles.mapPin, { top: '42%', left: '52%', borderColor: '#CCFF00' }]}>
-                <View style={[styles.mapPinInner, { backgroundColor: '#CCFF00' }]} />
-                <Text style={[styles.mapPinLabel, { color: '#CCFF00' }]}>COURIER</Text>
+                <View style={[styles.mapPinInner, { backgroundColor: theme.primary }]} />
+                <Text style={[styles.mapPinLabel, { color: theme.primary }]}>COURIER</Text>
               </View>
 
               {/* Recipient Node */}
@@ -162,7 +165,7 @@ export default function HomeScreen() {
               <Pressable
                 key={item.id}
                 style={styles.shipmentCard}
-                onPress={() => router.push(`/shipment/${item.id}` as any)}
+                onPress={() => router.push(`/views/shipment/${item.id}` as any)}
               >
                 <View style={styles.shipmentHeader}>
                   <Text style={[styles.shipmentId, styles.monoText]}>{item.id}</Text>
@@ -253,7 +256,7 @@ export default function HomeScreen() {
           <View style={styles.statsGrid}>
             <View style={styles.statBox}>
               <Text style={styles.statBoxLabel}>SHIFT EARNINGS</Text>
-              <Text style={[styles.statBoxValue, styles.monoText, { color: '#CCFF00' }]}>
+              <Text style={[styles.statBoxValue, styles.monoText, { color: theme.primary }]}>
                 ${riderStats.earnings.toFixed(2)}
               </Text>
             </View>
@@ -278,7 +281,7 @@ export default function HomeScreen() {
                 </View>
                 <Pressable
                   style={styles.detailsIconBtn}
-                  onPress={() => router.push(`/shipment/${activeRiderShipment.id}` as any)}
+                  onPress={() => router.push(`/views/shipment/${activeRiderShipment.id}` as any)}
                 >
                   <IconSymbol name="info.circle.fill" size={20} color="#CCFF00" />
                 </Pressable>
@@ -295,7 +298,7 @@ export default function HomeScreen() {
 
               <View style={styles.riderAddresses}>
                 <View style={styles.addressLine}>
-                  <View style={[styles.addressIndicator, { backgroundColor: '#CCFF00' }]} />
+                  <View style={[styles.addressIndicator, { backgroundColor: theme.primary }]} />
                   <View style={styles.addressDetails}>
                     <Text style={styles.addressRoleLabel}>ORIGIN PICKUP</Text>
                     <Text style={styles.addressText}>{activeRiderShipment.senderAddress}</Text>
@@ -374,10 +377,10 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
   },
   contentContainer: {
     padding: 16,
@@ -394,25 +397,25 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
     letterSpacing: 1,
   },
   headerSubtitle: {
     fontSize: 10,
-    color: '#71717A',
+    color: theme.muted,
     fontWeight: '800',
     letterSpacing: 1.5,
   },
   badge: {
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 4,
   },
   badgeText: {
-    color: '#CCFF00',
+    color: theme.primary,
     fontSize: 11,
     fontWeight: '900',
   },
@@ -420,9 +423,9 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   card: {
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -431,7 +434,7 @@ const styles = StyleSheet.create({
   cardHeader: {
     fontSize: 11,
     fontWeight: '900',
-    color: '#CCFF00',
+    color: theme.primary,
     letterSpacing: 1.5,
   },
   cardHeaderRow: {
@@ -446,12 +449,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 6,
     borderCurve: 'continuous',
-    color: '#FAFAFA',
+    color: theme.text,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
@@ -478,7 +481,7 @@ const styles = StyleSheet.create({
   statItem: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -487,16 +490,16 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#71717A',
+    color: theme.muted,
     letterSpacing: 0.5,
   },
   statValue: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
   },
   bookCtaButton: {
-    backgroundColor: '#CCFF00',
+    backgroundColor: theme.primary,
     paddingVertical: 14,
     borderRadius: 8,
     borderCurve: 'continuous',
@@ -530,9 +533,9 @@ const styles = StyleSheet.create({
   },
   mapMock: {
     height: 180,
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 6,
     borderCurve: 'continuous',
     position: 'relative',
@@ -559,7 +562,7 @@ const styles = StyleSheet.create({
     gap: 4,
     borderWidth: 1,
     borderColor: '#71717A',
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     borderRadius: 4,
     paddingHorizontal: 4,
     paddingVertical: 2,
@@ -573,7 +576,7 @@ const styles = StyleSheet.create({
   mapPinLabel: {
     fontSize: 9,
     fontWeight: '800',
-    color: '#71717A',
+    color: theme.muted,
   },
   mapPathLine: {
     position: 'absolute',
@@ -588,20 +591,20 @@ const styles = StyleSheet.create({
   },
   mapCaption: {
     fontSize: 10,
-    color: '#71717A',
+    color: theme.muted,
     textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
     letterSpacing: 1.5,
     marginTop: 8,
   },
   shipmentCard: {
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -615,7 +618,7 @@ const styles = StyleSheet.create({
   shipmentId: {
     fontSize: 14,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -631,10 +634,10 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: 0.5,
   },
-  statusTextPending: { color: '#A1A1AA' },
+  statusTextPending: { color: theme.muted },
   statusTextPicked: { color: '#60A5FA' },
   statusTextTransit: { color: '#FBBF24' },
-  statusTextDelivered: { color: '#10B981' },
+  statusTextDelivered: { color: theme.success },
   delayBanner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -662,12 +665,12 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#71717A',
+    color: theme.muted,
   },
   detailValue: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#FAFAFA',
+    color: theme.text,
     maxWidth: '70%',
   },
   emptyCard: {
@@ -680,7 +683,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    color: '#71717A',
+    color: theme.muted,
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
@@ -703,12 +706,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleSwitchOn: {
-    backgroundColor: '#CCFF00',
+    backgroundColor: theme.primary,
   },
   toggleSwitchOff: {
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
   },
   toggleKnob: {
     width: 24,
@@ -716,7 +719,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   toggleKnobOn: {
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     alignSelf: 'flex-end',
   },
   toggleKnobOff: {
@@ -729,9 +732,9 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 12,
@@ -740,17 +743,17 @@ const styles = StyleSheet.create({
   statBoxLabel: {
     fontSize: 9,
     fontWeight: '800',
-    color: '#71717A',
+    color: theme.muted,
   },
   statBoxValue: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
   },
   riderActiveCard: {
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -764,29 +767,29 @@ const styles = StyleSheet.create({
   riderActiveSub: {
     fontSize: 9,
     fontWeight: '800',
-    color: '#CCFF00',
+    color: theme.primary,
     letterSpacing: 0.5,
   },
   riderActiveId: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#FAFAFA',
+    color: theme.text,
   },
   detailsIconBtn: {
     padding: 6,
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
   },
   riderAddresses: {
     gap: 12,
-    backgroundColor: '#18181B',
+    backgroundColor: theme.background,
     padding: 12,
     borderRadius: 6,
     borderCurve: 'continuous',
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
   },
   addressLine: {
     flexDirection: 'row',
@@ -805,16 +808,16 @@ const styles = StyleSheet.create({
   addressRoleLabel: {
     fontSize: 8,
     fontWeight: '800',
-    color: '#71717A',
+    color: theme.muted,
   },
   addressText: {
     fontSize: 12,
-    color: '#FAFAFA',
+    color: theme.text,
     fontWeight: '600',
   },
   dividerLine: {
     height: 1,
-    backgroundColor: '#3F3F46',
+    backgroundColor: theme.border,
   },
   riderTaskCargoRow: {
     flexDirection: 'row',
@@ -823,16 +826,16 @@ const styles = StyleSheet.create({
   cargoLabel: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#71717A',
+    color: theme.muted,
   },
   cargoValue: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#FAFAFA',
+    color: theme.text,
     marginTop: 2,
   },
   actionCtaButton: {
-    backgroundColor: '#CCFF00',
+    backgroundColor: theme.primary,
     paddingVertical: 12,
     borderRadius: 6,
     borderCurve: 'continuous',
@@ -857,13 +860,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   emptyRiderTitle: {
-    color: '#FAFAFA',
+    color: theme.text,
     fontSize: 14,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
   emptyRiderSub: {
-    color: '#71717A',
+    color: theme.muted,
     fontSize: 11,
     fontWeight: '600',
     textAlign: 'center',
@@ -871,16 +874,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   gotoBoardBtn: {
-    backgroundColor: '#27272A',
+    backgroundColor: theme.card,
     borderWidth: 1,
-    borderColor: '#3F3F46',
+    borderColor: theme.border,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
     marginTop: 8,
   },
   gotoBoardBtnText: {
-    color: '#CCFF00',
+    color: theme.primary,
     fontSize: 11,
     fontWeight: '800',
   },

@@ -1,4 +1,4 @@
-import { ThemeProvider, DarkTheme } from "@react-navigation/native";
+import { ThemeProvider, DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -25,8 +25,9 @@ const LogiTrackDarkTheme = {
 };
 
 const LogiTrackLightTheme = {
-  dark: false,
+  ...DefaultTheme,
   colors: {
+    ...DefaultTheme.colors,
     primary: '#CCFF00', // Neon green accent
     background: '#FAFAFA',
     card: '#FFFFFF',
@@ -38,7 +39,7 @@ const LogiTrackLightTheme = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? LogiTrackDarkTheme : LogiTrackDarkTheme; // Force dark tactical theme for premium Command Center experience
+  const theme = colorScheme === "dark" ? LogiTrackDarkTheme : LogiTrackLightTheme;
 
   return (
     <LogiTrackProvider>
@@ -51,26 +52,28 @@ export default function RootLayout() {
             headerShadowVisible: false,
           }}
         >
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen
-            name="book-shipment"
+            name="views/book-shipment"
             options={{
               presentation: "formSheet",
               title: "Schedule Shipment",
               sheetGrabberVisible: true,
               sheetAllowedDetents: [0.9],
-              contentStyle: { backgroundColor: "transparent" },
             }}
           />
           <Stack.Screen
-            name="shipment/[id]"
+            name="views/shipment/[id]"
             options={{
               title: "Logistics Tracking",
               headerBackTitle: "Back",
             }}
           />
         </Stack>
-        <StatusBar style="light" />
+        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       </ThemeProvider>
     </LogiTrackProvider>
   );

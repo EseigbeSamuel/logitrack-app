@@ -11,33 +11,39 @@ const tintColorDark = '#fff';
 export const Colors = {
   light: {
     text: '#18181B',
-    background: '#FAFAFA',
-    tint: '#CCFF00',
-    icon: '#71717A',
-    tabIconDefault: '#71717A',
-    tabIconSelected: '#18181B',
+    background: '#F4F4F5', // Slightly off-white for depth
     card: '#FFFFFF',
     border: '#E4E4E7',
-    primary: '#CCFF00',
-    accent: '#EAB308',
+    primary: '#CCFF00', // Neon yellow accent
+    primaryText: '#18181B', // Dark text on primary
     muted: '#71717A',
+    mutedBg: '#F4F4F5',
     danger: '#EF4444',
+    dangerBg: '#FEE2E2',
     success: '#10B981',
+    successBg: '#D1FAE5',
+    warning: '#F59E0B',
+    warningBg: '#FEF3C7',
+    info: '#3B82F6',
+    infoBg: '#DBEAFE',
   },
   dark: {
     text: '#FAFAFA',
     background: '#18181B',
-    tint: '#CCFF00',
-    icon: '#71717A',
-    tabIconDefault: '#71717A',
-    tabIconSelected: '#CCFF00',
     card: '#27272A',
     border: '#3F3F46',
     primary: '#CCFF00',
-    accent: '#EAB308',
-    muted: '#71717A',
+    primaryText: '#18181B', // Dark text on primary
+    muted: '#A1A1AA',
+    mutedBg: '#18181B',
     danger: '#EF4444',
+    dangerBg: '#EF44441F',
     success: '#10B981',
+    successBg: '#10B9811F',
+    warning: '#EAB308',
+    warningBg: '#F59E0B1A',
+    info: '#60A5FA',
+    infoBg: '#3B82F61F',
   },
 };
 

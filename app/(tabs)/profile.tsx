@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Platform } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Platform, Appearance, useColorScheme } from 'react-native';
 import { useLogiTrack } from '@/store/logitrack-store';
-import { Colors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useThemeColors } from '@/hooks/use-theme-colors';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
-  const { activeRole, switchRole, riderStats, shipments, resetStore } = useLogiTrack();
+  const { activeRole, riderStats, shipments, logout, deleteAccount } = useLogiTrack();
+  const theme = useThemeColors();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const totalCustomerShipments = shipments.length;
   const totalCustomerSpent = shipments.reduce((sum, s) => sum + s.price, 0);
@@ -14,134 +19,109 @@ export default function ProfileScreen() {
     (s) => s.status !== 'delivered'
   ).length;
 
+  const toggleTheme = () => {
+    Appearance.setColorScheme(isDarkMode ? 'light' : 'dark');
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.replace('/auth/sign-in' as any);
+  };
+
+  const handleDeleteAccount = () => {
+    deleteAccount();
+    router.replace('/auth/sign-up' as any);
+  };
+
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
       contentInsetAdjustmentBehavior="automatic"
     >
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>LOGITRACK TERMINAL</Text>
-        <Text style={styles.headerSubtitle}>System Control & User Configuration</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>LOGITRACK TERMINAL</Text>
+        <Text style={[styles.headerSubtitle, { color: theme.muted }]}>System Control & User Configuration</Text>
       </View>
 
-      {/* Role Switcher Card */}
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>ACTIVE USER INTERFACE</Text>
-        <Text style={styles.cardHelper}>
-          Toggle between roles to test workflows. Statuses and shipments sync in real-time.
-        </Text>
-
-        <View style={styles.segmentContainer}>
-          <Pressable
-            style={[
-              styles.segmentButton,
-              activeRole === 'customer' && styles.segmentButtonActive,
-            ]}
-            onPress={() => switchRole('customer')}
-          >
-            <IconSymbol
-              name="person.fill"
-              size={18}
-              color={activeRole === 'customer' ? '#18181B' : '#71717A'}
-            />
-            <Text
-              style={[
-                styles.segmentText,
-                activeRole === 'customer' && styles.segmentTextActive,
-              ]}
-            >
-              CUSTOMER
-            </Text>
-          </Pressable>
-
-          <Pressable
-            style={[
-              styles.segmentButton,
-              activeRole === 'rider' && styles.segmentButtonActive,
-            ]}
-            onPress={() => switchRole('rider')}
-          >
-            <IconSymbol
-              name="car.fill"
-              size={18}
-              color={activeRole === 'rider' ? '#18181B' : '#71717A'}
-            />
-            <Text
-              style={[
-                styles.segmentText,
-                activeRole === 'rider' && styles.segmentTextActive,
-              ]}
-            >
-              RIDER / DRIVER
-            </Text>
-          </Pressable>
+      {/* Operator Metadata Card */}
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>OPERATOR PROFILE</Text>
+        <View style={styles.profileRow}>
+          <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
+            <Text style={[styles.avatarText, { color: theme.primaryText }]}>MV</Text>
+          </View>
+          <View style={styles.profileDetails}>
+            <Text style={[styles.profileName, { color: theme.text }]}>Marcus Vance</Text>
+            <Text style={[styles.profileMeta, styles.monoText, { color: theme.muted }]}>ROLE: {activeRole.toUpperCase()}</Text>
+            <Text style={[styles.profileMeta, { color: theme.muted }]}>HQ Center: San Francisco Logistics</Text>
+          </View>
         </View>
       </View>
 
       {/* Role-Specific Stats Dashboard */}
       {activeRole === 'customer' ? (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>CUSTOMER OVERVIEW</Text>
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.primary }]}>CUSTOMER OVERVIEW</Text>
           
           <View style={styles.statsGrid}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>TOTAL BOOKINGS</Text>
-              <Text style={[styles.statValue, styles.monoText]}>{totalCustomerShipments}</Text>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>TOTAL BOOKINGS</Text>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.text }]}>{totalCustomerShipments}</Text>
             </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>ACTIVE RUNS</Text>
-              <Text style={[styles.statValue, styles.monoText, { color: '#60A5FA' }]}>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>ACTIVE RUNS</Text>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.info }]}>
                 {activeShipmentsCount}
               </Text>
             </View>
           </View>
 
-          <View style={[styles.statBox, { marginTop: 12, width: '100%' }]}>
-            <Text style={styles.statLabel}>LOGISTICS ACCUMULATED SPEND</Text>
-            <Text style={[styles.statValue, styles.monoText, { color: '#CCFF00' }]}>
+          <View style={[styles.statBox, { marginTop: 12, width: '100%', backgroundColor: theme.background, borderColor: theme.border }]}>
+            <Text style={[styles.statLabel, { color: theme.muted }]}>LOGISTICS ACCUMULATED SPEND</Text>
+            <Text style={[styles.statValue, styles.monoText, { color: theme.primary }]}>
               ${totalCustomerSpent.toFixed(2)}
             </Text>
           </View>
         </View>
       ) : (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>RIDER PERFORMANCE</Text>
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.primary }]}>RIDER PERFORMANCE</Text>
 
           <View style={styles.statsGrid}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>DUTY STATUS</Text>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>DUTY STATUS</Text>
               <View style={styles.statusIndicatorWrapper}>
                 <View
                   style={[
                     styles.statusDot,
-                    { backgroundColor: riderStats.isOnline ? '#10B981' : '#71717A' },
+                    { backgroundColor: riderStats.isOnline ? theme.success : theme.muted },
                   ]}
                 />
                 <Text
                   style={[
                     styles.statValue,
-                    { fontSize: 16, color: riderStats.isOnline ? '#10B981' : '#71717A' },
+                    { fontSize: 16, color: riderStats.isOnline ? theme.success : theme.muted },
                   ]}
                 >
                   {riderStats.isOnline ? 'ONLINE' : 'OFFLINE'}
                 </Text>
               </View>
             </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>TRIPS COMPLETED</Text>
-              <Text style={[styles.statValue, styles.monoText]}>{riderStats.completedTasks}</Text>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>TRIPS COMPLETED</Text>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.text }]}>{riderStats.completedTasks}</Text>
             </View>
           </View>
 
           <View style={styles.statsGrid}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>HOURS LOGGED</Text>
-              <Text style={[styles.statValue, styles.monoText]}>{riderStats.hoursOnline}h</Text>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>HOURS LOGGED</Text>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.text }]}>{riderStats.hoursOnline}h</Text>
             </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>TOTAL EARNINGS</Text>
-              <Text style={[styles.statValue, styles.monoText, { color: '#CCFF00' }]}>
+            <View style={[styles.statBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.statLabel, { color: theme.muted }]}>TOTAL EARNINGS</Text>
+              <Text style={[styles.statValue, styles.monoText, { color: theme.primary }]}>
                 ${riderStats.earnings.toFixed(2)}
               </Text>
             </View>
@@ -149,29 +129,37 @@ export default function ProfileScreen() {
         </View>
       )}
 
-      {/* Operator Metadata Card */}
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>OPERATOR PROFILE</Text>
-        <View style={styles.profileRow}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>MV</Text>
-          </View>
-          <View style={styles.profileDetails}>
-            <Text style={styles.profileName}>Marcus Vance</Text>
-            <Text style={[styles.profileMeta, styles.monoText]}>ID: OP-984-X2</Text>
-            <Text style={styles.profileMeta}>HQ Center: San Francisco Logistics</Text>
-          </View>
-        </View>
+      {/* Theme Controls */}
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>APPEARANCE</Text>
+        <Text style={[styles.cardHelper, { color: theme.muted }]}>
+          Toggle the interface appearance between active Dark Mode and Light Mode configurations.
+        </Text>
+        <Pressable 
+          style={[styles.themeButton, { backgroundColor: theme.background, borderColor: theme.border }]} 
+          onPress={toggleTheme}
+        >
+          <IconSymbol name={isDarkMode ? 'checkmark.circle.fill' : 'circle'} size={18} color={theme.text} />
+          <Text style={[styles.themeButtonText, { color: theme.text }]}>
+            {isDarkMode ? 'DARK MODE ENABLED' : 'SWITCH TO DARK MODE'}
+          </Text>
+        </Pressable>
       </View>
 
-      {/* Danger Zone / System Reset */}
-      <View style={[styles.card, { borderColor: '#EF444433' }]}>
-        <Text style={[styles.sectionTitle, { color: '#EF4444' }]}>SYSTEM CONTROLS</Text>
-        <Text style={styles.cardHelper}>
-          Reset all mock shipments, driver logs, earnings, and configurations to original state.
-        </Text>
-        <Pressable style={styles.resetButton} onPress={resetStore}>
-          <Text style={styles.resetButtonText}>RESET SIMULATOR DATABASE</Text>
+      {/* Auth Controls */}
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>SESSION CONTROLS</Text>
+        <Pressable 
+          style={[styles.themeButton, { backgroundColor: theme.background, borderColor: theme.border, marginBottom: 8 }]} 
+          onPress={handleLogout}
+        >
+          <Text style={[styles.themeButtonText, { color: theme.text }]}>LOG OUT OF TERMINAL</Text>
+        </Pressable>
+        <Pressable 
+          style={[styles.resetButton, { backgroundColor: theme.dangerBg, borderColor: theme.danger }]} 
+          onPress={handleDeleteAccount}
+        >
+          <Text style={[styles.resetButtonText, { color: theme.danger }]}>DELETE ACCOUNT DATA</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -181,7 +169,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#18181B',
   },
   contentContainer: {
     padding: 16,
@@ -195,20 +182,16 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#FAFAFA',
     letterSpacing: 1,
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#71717A',
     fontWeight: '600',
     marginTop: 4,
     textTransform: 'uppercase',
   },
   card: {
-    backgroundColor: '#27272A',
     borderWidth: 1,
-    borderColor: '#3F3F46',
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -218,42 +201,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#CCFF00',
     letterSpacing: 1.5,
   },
   cardHelper: {
     fontSize: 12,
-    color: '#71717A',
     lineHeight: 16,
-  },
-  segmentContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#18181B',
-    padding: 4,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    gap: 4,
-  },
-  segmentButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 6,
-    borderCurve: 'continuous',
-    gap: 6,
-  },
-  segmentButtonActive: {
-    backgroundColor: '#CCFF00',
-  },
-  segmentText: {
-    color: '#71717A',
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  segmentTextActive: {
-    color: '#18181B',
   },
   statsGrid: {
     flexDirection: 'row',
@@ -261,9 +213,7 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#18181B',
     borderWidth: 1,
-    borderColor: '#3F3F46',
     borderRadius: 6,
     borderCurve: 'continuous',
     padding: 12,
@@ -272,16 +222,15 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#71717A',
     letterSpacing: 0.5,
   },
   statValue: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#FAFAFA',
   },
   monoText: {
     fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    fontVariant: ['tabular-nums'],
   },
   statusIndicatorWrapper: {
     flexDirection: 'row',
@@ -303,12 +252,10 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 8,
-    backgroundColor: '#CCFF00',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#18181B',
     fontWeight: '900',
     fontSize: 18,
   },
@@ -319,17 +266,29 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#FAFAFA',
   },
   profileMeta: {
     fontSize: 11,
-    color: '#71717A',
     fontWeight: '600',
   },
-  resetButton: {
-    backgroundColor: '#EF44441F',
+  themeButton: {
     borderWidth: 1,
-    borderColor: '#EF4444',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    borderCurve: 'continuous',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  themeButtonText: {
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  resetButton: {
+    borderWidth: 1,
     paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -337,7 +296,6 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
   },
   resetButtonText: {
-    color: '#EF4444',
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 0.5,

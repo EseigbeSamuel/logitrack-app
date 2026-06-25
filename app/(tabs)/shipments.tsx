@@ -11,9 +11,11 @@ import { useRouter } from 'expo-router';
 import { useLogiTrack, Shipment } from '@/store/logitrack-store';
 import { Colors } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export default function ShipmentsScreen() {
   const router = useRouter();
+  const theme = useThemeColors();
   const { activeRole, shipments, acceptTask, riderStats } = useLogiTrack();
 
   // Sub-tabs for Riders: 'my_tasks' | 'available_tasks'
@@ -31,32 +33,32 @@ export default function ShipmentsScreen() {
     return (
       <Pressable
         key={item.id}
-        style={styles.shipmentCard}
-        onPress={() => router.push(`/shipment/${item.id}` as any)}
+        style={[styles.shipmentCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+        onPress={() => router.push(`/views/shipment/${item.id}` as any)}
       >
         <View style={styles.shipmentHeader}>
           <View>
-            <Text style={[styles.shipmentId, styles.monoText]}>{item.id}</Text>
-            <Text style={styles.packageCategoryLabel}>
+            <Text style={[styles.shipmentId, styles.monoText, { color: theme.text }]}>{item.id}</Text>
+            <Text style={[styles.packageCategoryLabel, { color: theme.muted }]}>
               {item.packageCategory.toUpperCase()} • {item.weight.toFixed(1)} KG
             </Text>
           </View>
           <View
             style={[
-              styles.statusBadge,
-              item.status === 'pending' && styles.statusPending,
-              item.status === 'picked_up' && styles.statusPicked,
-              item.status === 'in_transit' && styles.statusTransit,
-              item.status === 'delivered' && styles.statusDelivered,
+              styles.statusBadge, { backgroundColor: theme.mutedBg },
+              item.status === 'pending' && { backgroundColor: theme.mutedBg },
+              item.status === 'picked_up' && { backgroundColor: theme.infoBg },
+              item.status === 'in_transit' && { backgroundColor: theme.warningBg },
+              item.status === 'delivered' && { backgroundColor: theme.successBg },
             ]}
           >
             <Text
               style={[
-                styles.statusBadgeText,
-                item.status === 'pending' && styles.statusTextPending,
-                item.status === 'picked_up' && styles.statusTextPicked,
-                item.status === 'in_transit' && styles.statusTextTransit,
-                item.status === 'delivered' && styles.statusTextDelivered,
+                styles.statusBadgeText, { color: theme.text },
+                item.status === 'pending' && { color: theme.muted },
+                item.status === 'picked_up' && { color: theme.info },
+                item.status === 'in_transit' && { color: theme.warning },
+                item.status === 'delivered' && { color: theme.success },
               ]}
             >
               {item.status.toUpperCase().replace('_', ' ')}
@@ -65,33 +67,33 @@ export default function ShipmentsScreen() {
         </View>
 
         {item.delayReason && (
-          <View style={styles.delayBanner}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EAB308" />
-            <Text style={styles.delayText}>DELAY ALERT: {item.delayReason.toUpperCase()}</Text>
+          <View style={[styles.delayBanner, { backgroundColor: theme.dangerBg, borderColor: theme.danger }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color={theme.warning} />
+            <Text style={[styles.delayText, { color: theme.danger }]}>DELAY ALERT: {item.delayReason.toUpperCase()}</Text>
           </View>
         )}
 
-        <View style={styles.addressSection}>
+        <View style={[styles.addressSection, { backgroundColor: theme.background, borderColor: theme.border }]}>
           <View style={styles.addressRow}>
-            <View style={[styles.addressDot, { backgroundColor: '#CCFF00' }]} />
-            <Text style={styles.addressText} numberOfLines={1}>
+            <View style={[styles.addressDot, { backgroundColor: theme.primary }]} />
+            <Text style={[styles.addressText, { color: theme.text }]} numberOfLines={1}>
               {item.senderAddress}
             </Text>
           </View>
-          <View style={styles.addressConnector} />
+          <View style={[styles.addressConnector, { backgroundColor: theme.border }]} />
           <View style={styles.addressRow}>
-            <View style={[styles.addressDot, { backgroundColor: '#60A5FA' }]} />
-            <Text style={styles.addressText} numberOfLines={1}>
+            <View style={[styles.addressDot, { backgroundColor: theme.info }]} />
+            <Text style={[styles.addressText, { color: theme.text }]} numberOfLines={1}>
               {item.recipientAddress}
             </Text>
           </View>
         </View>
 
-        <View style={styles.footerRow}>
-          <Text style={styles.timestampText}>
+        <View style={[styles.footerRow, { borderTopColor: theme.border }]}>
+          <Text style={[styles.timestampText, { color: theme.muted }]}>
             Created: {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </Text>
-          <Text style={[styles.tariffValue, styles.monoText]}>
+          <Text style={[styles.tariffValue, styles.monoText, { color: theme.primary }]}>
             ${item.price.toFixed(2)}
           </Text>
         </View>
@@ -100,12 +102,12 @@ export default function ShipmentsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.screenHeader}>
-        <Text style={styles.screenTitle}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.screenHeader, { borderBottomColor: theme.card }]}>
+        <Text style={[styles.screenTitle, { color: theme.text }]}>
           {activeRole === 'customer' ? 'ROUTE REGISTRY' : 'DISPATCH CONTROL'}
         </Text>
-        <Text style={styles.screenSubtitle}>
+        <Text style={[styles.screenSubtitle, { color: theme.muted }]}>
           {activeRole === 'customer'
             ? 'Track registered consignments and histories'
             : 'Manage accepted routes and open boarding tasks'}
@@ -114,18 +116,18 @@ export default function ShipmentsScreen() {
 
       {/* Driver/Rider Segment Tabs */}
       {activeRole === 'rider' && (
-        <View style={styles.riderTabsContainer}>
+        <View style={[styles.riderTabsContainer, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
           <Pressable
             style={[
               styles.riderTab,
-              riderSubTab === 'my_tasks' && styles.riderTabActive,
+              riderSubTab === 'my_tasks' && [styles.riderTabActive, { backgroundColor: theme.card, borderColor: theme.border }],
             ]}
             onPress={() => setRiderSubTab('my_tasks')}
           >
             <Text
               style={[
-                styles.riderTabText,
-                riderSubTab === 'my_tasks' && styles.riderTabTextActive,
+                styles.riderTabText, { color: theme.muted },
+                riderSubTab === 'my_tasks' && [styles.riderTabTextActive, { color: theme.primaryText }],
               ]}
             >
               MY TASKS ({riderTasks.length})
@@ -135,14 +137,14 @@ export default function ShipmentsScreen() {
           <Pressable
             style={[
               styles.riderTab,
-              riderSubTab === 'available_tasks' && styles.riderTabActive,
+              riderSubTab === 'available_tasks' && [styles.riderTabActive, { backgroundColor: theme.card, borderColor: theme.border }],
             ]}
             onPress={() => setRiderSubTab('available_tasks')}
           >
             <Text
               style={[
-                styles.riderTabText,
-                riderSubTab === 'available_tasks' && styles.riderTabTextActive,
+                styles.riderTabText, { color: theme.muted },
+                riderSubTab === 'available_tasks' && [styles.riderTabTextActive, { color: theme.primaryText }],
               ]}
             >
               DISPATCH BOARD ({availableTasks.length})
@@ -159,22 +161,22 @@ export default function ShipmentsScreen() {
         {activeRole === 'customer' ? (
           <View style={styles.listSection}>
             {/* Active Consignments */}
-            <Text style={styles.groupHeader}>ACTIVE SHIPMENTS</Text>
+            <Text style={[styles.groupHeader, { color: theme.muted }]}>ACTIVE SHIPMENTS</Text>
             {customerActive.length > 0 ? (
               customerActive.map((item) => renderShipmentCard(item))
             ) : (
-              <View style={styles.emptyCard}>
-                <Text style={styles.emptyText}>No active logistics runs registered.</Text>
+              <View style={[styles.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                <Text style={[styles.emptyText, { color: theme.muted }]}>No active logistics runs registered.</Text>
               </View>
             )}
 
             {/* Past Consignments */}
-            <Text style={[styles.groupHeader, { marginTop: 12 }]}>DELIVERED RUNS</Text>
+            <Text style={[styles.groupHeader, { color: theme.muted, marginTop: 12 }]}>DELIVERED RUNS</Text>
             {customerHistory.length > 0 ? (
               customerHistory.map((item) => renderShipmentCard(item))
             ) : (
-              <View style={styles.emptyCard}>
-                <Text style={styles.emptyText}>No delivery history available yet.</Text>
+              <View style={[styles.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                <Text style={[styles.emptyText, { color: theme.muted }]}>No delivery history available yet.</Text>
               </View>
             )}
           </View>
@@ -186,15 +188,15 @@ export default function ShipmentsScreen() {
                 {riderTasks.length > 0 ? (
                   riderTasks.map((item) => renderShipmentCard(item))
                 ) : (
-                  <View style={styles.emptyCard}>
-                    <Text style={styles.emptyText}>
+                  <View style={[styles.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                    <Text style={[styles.emptyText, { color: theme.muted }]}>
                       No shipments assigned to your driver ID.
                     </Text>
                     <Pressable
-                      style={styles.secondaryActionBtn}
+                      style={[styles.secondaryActionBtn, { backgroundColor: theme.background, borderColor: theme.border }]}
                       onPress={() => setRiderSubTab('available_tasks')}
                     >
-                      <Text style={styles.secondaryActionText}>OPEN DISPATCH BOARD</Text>
+                      <Text style={[styles.secondaryActionText, { color: theme.primaryText }]}>OPEN DISPATCH BOARD</Text>
                     </Pressable>
                   </View>
                 )}
@@ -205,9 +207,9 @@ export default function ShipmentsScreen() {
             {riderSubTab === 'available_tasks' && (
               <>
                 {!riderStats.isOnline && (
-                  <View style={styles.offlineWarningCard}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EAB308" />
-                    <Text style={styles.offlineWarningText}>
+                  <View style={[styles.offlineWarningCard, { backgroundColor: theme.warningBg, borderColor: theme.warning }]}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={16} color={theme.warning} />
+                    <Text style={[styles.offlineWarningText, { color: theme.warning }]}>
                       You are currently OFFLINE. Toggle online duty status in Dashboard or Terminal to accept routes.
                     </Text>
                   </View>
@@ -215,38 +217,38 @@ export default function ShipmentsScreen() {
 
                 {availableTasks.length > 0 ? (
                   availableTasks.map((item) => (
-                    <View key={item.id} style={styles.availableCard}>
+                    <View key={item.id} style={[styles.availableCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
                       <View style={styles.availableHeader}>
                         <View>
-                          <Text style={[styles.availableId, styles.monoText]}>{item.id}</Text>
-                          <Text style={styles.packageCategoryLabel}>
+                          <Text style={[styles.availableId, styles.monoText, { color: theme.text }]}>{item.id}</Text>
+                          <Text style={[styles.packageCategoryLabel, { color: theme.muted }]}>
                             {item.packageCategory.toUpperCase()} • {item.weight.toFixed(1)} KG
                           </Text>
                         </View>
-                        <Text style={[styles.availableTariff, styles.monoText]}>
+                        <Text style={[styles.availableTariff, styles.monoText, { color: theme.primary }]}>
                           ${item.price.toFixed(2)}
                         </Text>
                       </View>
 
-                      <View style={styles.addressSection}>
+                      <View style={[styles.addressSection, { backgroundColor: theme.background, borderColor: theme.border }]}>
                         <View style={styles.addressRow}>
-                          <View style={[styles.addressDot, { backgroundColor: '#CCFF00' }]} />
-                          <Text style={styles.addressText} numberOfLines={1}>
+                          <View style={[styles.addressDot, { backgroundColor: theme.primary }]} />
+                          <Text style={[styles.addressText, { color: theme.text }]} numberOfLines={1}>
                             Pickup: {item.senderAddress}
                           </Text>
                         </View>
-                        <View style={styles.addressConnector} />
+                        <View style={[styles.addressConnector, { backgroundColor: theme.border }]} />
                         <View style={styles.addressRow}>
-                          <View style={[styles.addressDot, { backgroundColor: '#60A5FA' }]} />
-                          <Text style={styles.addressText} numberOfLines={1}>
+                          <View style={[styles.addressDot, { backgroundColor: theme.info }]} />
+                          <Text style={[styles.addressText, { color: theme.text }]} numberOfLines={1}>
                             Dropoff: {item.recipientAddress}
                           </Text>
                         </View>
                       </View>
 
                       {item.notes ? (
-                        <View style={styles.notesBox}>
-                          <Text style={styles.notesText} numberOfLines={1}>
+                        <View style={[styles.notesBox, { backgroundColor: theme.mutedBg, borderLeftColor: theme.muted }]}>
+                          <Text style={[styles.notesText, { color: theme.muted }]} numberOfLines={1}>
                             Notes: "{item.notes}"
                           </Text>
                         </View>
@@ -254,20 +256,20 @@ export default function ShipmentsScreen() {
 
                       <Pressable
                         style={[
-                          styles.acceptBtn,
-                          (!riderStats.isOnline) && styles.acceptBtnDisabled,
+                          styles.acceptBtn, { backgroundColor: theme.primary },
+                          (!riderStats.isOnline) && [styles.acceptBtnDisabled, { backgroundColor: theme.background, borderColor: theme.border }],
                         ]}
                         disabled={!riderStats.isOnline}
                         onPress={() => acceptTask(item.id)}
                       >
-                        <IconSymbol name="plus.circle.fill" size={16} color="#18181B" />
-                        <Text style={styles.acceptBtnText}>ACCEPT ROUTE DISPATCH</Text>
+                        <IconSymbol name="plus.circle.fill" size={16} color={theme.primaryText} />
+                        <Text style={[styles.acceptBtnText, { color: theme.primaryText }]}>ACCEPT ROUTE DISPATCH</Text>
                       </Pressable>
                     </View>
                   ))
                 ) : (
-                  <View style={styles.emptyCard}>
-                    <Text style={styles.emptyText}>
+                  <View style={[styles.emptyCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                    <Text style={[styles.emptyText, { color: theme.muted }]}>
                       Dispatch board clear. Check back later for open logistics shipments.
                     </Text>
                   </View>
@@ -284,14 +286,12 @@ export default function ShipmentsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#18181B',
   },
   screenHeader: {
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 64 : 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#27272A',
   },
   screenTitle: {
     fontSize: 22,
@@ -348,14 +348,11 @@ const styles = StyleSheet.create({
   groupHeader: {
     fontSize: 10,
     fontWeight: '900',
-    color: '#71717A',
     letterSpacing: 1.5,
     marginBottom: 4,
   },
   shipmentCard: {
-    backgroundColor: '#27272A',
     borderWidth: 1,
-    borderColor: '#3F3F46',
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -369,11 +366,9 @@ const styles = StyleSheet.create({
   shipmentId: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#FAFAFA',
   },
   packageCategoryLabel: {
     fontSize: 9,
-    color: '#71717A',
     fontWeight: '800',
     marginTop: 2,
     letterSpacing: 0.5,
@@ -383,43 +378,30 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
   },
-  statusPending: { backgroundColor: '#71717A1F' },
-  statusPicked: { backgroundColor: '#3B82F61F' },
-  statusTransit: { backgroundColor: '#F59E0B1F' },
-  statusDelivered: { backgroundColor: '#10B9811F' },
   statusBadgeText: {
     fontSize: 9,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
-  statusTextPending: { color: '#A1A1AA' },
-  statusTextPicked: { color: '#60A5FA' },
-  statusTextTransit: { color: '#FBBF24' },
-  statusTextDelivered: { color: '#10B981' },
   delayBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EF44441F',
     borderWidth: 0.5,
-    borderColor: '#EF444433',
     paddingVertical: 6,
     paddingHorizontal: 8,
     borderRadius: 4,
   },
   delayText: {
-    color: '#EF4444',
     fontSize: 9,
     fontWeight: '800',
     letterSpacing: 0.5,
   },
   addressSection: {
-    backgroundColor: '#18181B',
     padding: 12,
     borderRadius: 6,
     borderCurve: 'continuous',
     borderWidth: 0.5,
-    borderColor: '#3F3F46',
   },
   addressRow: {
     flexDirection: 'row',
@@ -432,7 +414,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   addressText: {
-    color: '#FAFAFA',
     fontSize: 11,
     fontWeight: '600',
     flex: 1,
@@ -440,7 +421,6 @@ const styles = StyleSheet.create({
   addressConnector: {
     width: 1,
     height: 10,
-    backgroundColor: '#3F3F46',
     marginLeft: 2.5,
     marginVertical: 2,
   },
@@ -449,24 +429,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: 0.5,
-    borderTopColor: '#3F3F46',
     paddingTop: 8,
     marginTop: 2,
   },
   timestampText: {
     fontSize: 9,
-    color: '#71717A',
     fontWeight: '700',
   },
   tariffValue: {
     fontSize: 14,
     fontWeight: '900',
-    color: '#CCFF00',
   },
   emptyCard: {
-    backgroundColor: '#1E1E20',
     borderWidth: 1,
-    borderColor: '#2D2D30',
     borderRadius: 8,
     padding: 24,
     alignItems: 'center',
@@ -474,28 +449,22 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   emptyText: {
-    color: '#71717A',
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
   },
   secondaryActionBtn: {
-    backgroundColor: '#27272A',
     borderWidth: 1,
-    borderColor: '#3F3F46',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 6,
   },
   secondaryActionText: {
-    color: '#CCFF00',
     fontSize: 11,
     fontWeight: '800',
   },
   availableCard: {
-    backgroundColor: '#27272A',
     borderWidth: 1,
-    borderColor: '#3F3F46',
     borderRadius: 8,
     borderCurve: 'continuous',
     padding: 16,
@@ -509,27 +478,21 @@ const styles = StyleSheet.create({
   availableId: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#FAFAFA',
   },
   availableTariff: {
     fontSize: 16,
     fontWeight: '900',
-    color: '#CCFF00',
   },
   notesBox: {
-    backgroundColor: '#18181B1F',
     borderLeftWidth: 2,
-    borderLeftColor: '#71717A',
     paddingLeft: 8,
     paddingVertical: 2,
   },
   notesText: {
     fontSize: 11,
-    color: '#71717A',
     fontStyle: 'italic',
   },
   acceptBtn: {
-    backgroundColor: '#CCFF00',
     paddingVertical: 12,
     borderRadius: 6,
     borderCurve: 'continuous',
@@ -539,27 +502,21 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   acceptBtnDisabled: {
-    backgroundColor: '#27272A',
     borderWidth: 1,
-    borderColor: '#3F3F46',
   },
   acceptBtnText: {
-    color: '#18181B',
     fontWeight: '900',
     fontSize: 12,
   },
   offlineWarningCard: {
     flexDirection: 'row',
     gap: 10,
-    backgroundColor: '#F59E0B1A',
     borderWidth: 1,
-    borderColor: '#F59E0B33',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   offlineWarningText: {
-    color: '#FBBF24',
     fontSize: 10,
     fontWeight: '700',
     flex: 1,

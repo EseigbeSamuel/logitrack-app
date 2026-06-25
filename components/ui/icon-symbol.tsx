@@ -28,6 +28,7 @@ const MAPPING = {
   'car.fill': 'directions-car',
   'info.circle.fill': 'info',
   'arrow.left': 'arrow-back',
+  'bubble.left.and.bubble.right.fill': 'chat',
 } as IconMapping;
 
 /**

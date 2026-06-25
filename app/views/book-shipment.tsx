@@ -12,9 +12,11 @@ import {
 } from "react-native";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PackageCategory, useLogiTrack } from "@/store/logitrack-store";
+import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export default function BookShipmentScreen() {
   const router = useRouter();
+  const theme = useThemeColors();
   const { createShipment } = useLogiTrack();
 
   const [senderName, setSenderName] = useState("Sarah Jenkins");
@@ -76,43 +78,43 @@ export default function BookShipmentScreen() {
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>BOOK LOGISTICS ROUTE</Text>
-          <Pressable onPress={() => router.back()} style={styles.closeButton}>
-            <Text style={styles.closeText}>CANCEL</Text>
+        <View style={[styles.modalHeader, { borderBottomColor: theme.border }]}>
+          <Text style={[styles.modalTitle, { color: theme.text }]}>BOOK LOGISTICS ROUTE</Text>
+          <Pressable onPress={() => router.back()} style={[styles.closeButton, { backgroundColor: theme.card, borderColor: theme.border }]}>
+            <Text style={[styles.closeText, { color: theme.muted }]}>CANCEL</Text>
           </Pressable>
         </View>
 
         {/* Sender Section */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionHeader}>SENDER ORIGIN</Text>
+        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.sectionHeader, { color: theme.primary }]}>SENDER ORIGIN</Text>
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>SENDER NAME</Text>
+            <Text style={[styles.inputLabel, { color: theme.muted }]}>SENDER NAME</Text>
             <TextInput
               style={[
-                styles.textInput,
-                activeInput === "senderName" && styles.textInputActive,
+                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
+                activeInput === "senderName" && [styles.textInputActive, { borderColor: theme.primary }],
               ]}
               value={senderName}
               onChangeText={setSenderName}
               placeholder="Full Name / Company"
-              placeholderTextColor="#71717A"
+              placeholderTextColor={theme.muted}
               onFocus={() => setActiveInput("senderName")}
               onBlur={() => setActiveInput(null)}
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>ORIGIN ADDRESS</Text>
+            <Text style={[styles.inputLabel, { color: theme.muted }]}>ORIGIN ADDRESS</Text>
             <TextInput
               style={[
-                styles.textInput,
-                activeInput === "senderAddress" && styles.textInputActive,
+                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
+                activeInput === "senderAddress" && [styles.textInputActive, { borderColor: theme.primary }],
               ]}
               value={senderAddress}
               onChangeText={setSenderAddress}
               placeholder="Street, City, Building Number"
-              placeholderTextColor="#71717A"
+              placeholderTextColor={theme.muted}
               onFocus={() => setActiveInput("senderAddress")}
               onBlur={() => setActiveInput(null)}
             />
@@ -120,35 +122,35 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Recipient Section */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionHeader}>RECIPIENT DESTINATION</Text>
+        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.sectionHeader, { color: theme.primary }]}>RECIPIENT DESTINATION</Text>
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>RECIPIENT NAME</Text>
+            <Text style={[styles.inputLabel, { color: theme.muted }]}>RECIPIENT NAME</Text>
             <TextInput
               style={[
-                styles.textInput,
-                activeInput === "recipientName" && styles.textInputActive,
+                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
+                activeInput === "recipientName" && [styles.textInputActive, { borderColor: theme.primary }],
               ]}
               value={recipientName}
               onChangeText={setRecipientName}
               placeholder="Full Name / Clinic / Facility"
-              placeholderTextColor="#71717A"
+              placeholderTextColor={theme.muted}
               onFocus={() => setActiveInput("recipientName")}
               onBlur={() => setActiveInput(null)}
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>DESTINATION ADDRESS</Text>
+            <Text style={[styles.inputLabel, { color: theme.muted }]}>DESTINATION ADDRESS</Text>
             <TextInput
               style={[
-                styles.textInput,
-                activeInput === "recipientAddress" && styles.textInputActive,
+                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
+                activeInput === "recipientAddress" && [styles.textInputActive, { borderColor: theme.primary }],
               ]}
               value={recipientAddress}
               onChangeText={setRecipientAddress}
               placeholder="Street, City, Suite / Room"
-              placeholderTextColor="#71717A"
+              placeholderTextColor={theme.muted}
               onFocus={() => setActiveInput("recipientAddress")}
               onBlur={() => setActiveInput(null)}
             />
@@ -156,24 +158,24 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Package Specifications */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionHeader}>CARGO SPECIFICATIONS</Text>
+        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.sectionHeader, { color: theme.primary }]}>CARGO SPECIFICATIONS</Text>
 
-          <Text style={styles.inputLabel}>CATEGORY</Text>
+          <Text style={[styles.inputLabel, { color: theme.muted }]}>CATEGORY</Text>
           <View style={styles.categoriesGrid}>
             {categories.map((cat) => (
               <Pressable
                 key={cat}
                 style={[
-                  styles.categoryPill,
-                  packageCategory === cat && styles.categoryPillActive,
+                  styles.categoryPill, { backgroundColor: theme.background, borderColor: theme.border },
+                  packageCategory === cat && [styles.categoryPillActive, { borderColor: theme.primary, backgroundColor: theme.primary + '1A' }],
                 ]}
                 onPress={() => setPackageCategory(cat)}
               >
                 <Text
                   style={[
-                    styles.categoryText,
-                    packageCategory === cat && styles.categoryTextActive,
+                    styles.categoryText, { color: theme.muted },
+                    packageCategory === cat && [styles.categoryTextActive, { color: theme.primary }],
                   ]}
                 >
                   {cat.toUpperCase()}
@@ -182,41 +184,41 @@ export default function BookShipmentScreen() {
             ))}
           </View>
 
-          <View style={styles.weightControlGroup}>
+          <View style={[styles.weightControlGroup, { backgroundColor: theme.background, borderColor: theme.border }]}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.inputLabel}>WEIGHT (KG)</Text>
-              <Text style={[styles.weightValueText, styles.monoText]}>
+              <Text style={[styles.inputLabel, { color: theme.muted }]}>WEIGHT (KG)</Text>
+              <Text style={[styles.weightValueText, styles.monoText, { color: theme.text }]}>
                 {weight.toFixed(1)} KG
               </Text>
             </View>
             <View style={styles.weightButtons}>
               <Pressable
-                style={styles.weightAdjustButton}
+                style={[styles.weightAdjustButton, { backgroundColor: theme.card, borderColor: theme.border }]}
                 onPress={() => adjustWeight(-0.5)}
               >
-                <Text style={styles.weightAdjustText}>-</Text>
+                <Text style={[styles.weightAdjustText, { color: theme.text }]}>-</Text>
               </Pressable>
               <Pressable
-                style={styles.weightAdjustButton}
+                style={[styles.weightAdjustButton, { backgroundColor: theme.card, borderColor: theme.border }]}
                 onPress={() => adjustWeight(0.5)}
               >
-                <Text style={styles.weightAdjustText}>+</Text>
+                <Text style={[styles.weightAdjustText, { color: theme.text }]}>+</Text>
               </Pressable>
             </View>
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>SPECIAL INSTRUCTIONS</Text>
+            <Text style={[styles.inputLabel, { color: theme.muted }]}>SPECIAL INSTRUCTIONS</Text>
             <TextInput
               style={[
-                styles.textInput,
+                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
                 styles.textAreaInput,
-                activeInput === "notes" && styles.textInputActive,
+                activeInput === "notes" && [styles.textInputActive, { borderColor: theme.primary }],
               ]}
               value={notes}
               onChangeText={setNotes}
               placeholder="Add loading notes, gate codes, or handling warnings"
-              placeholderTextColor="#71717A"
+              placeholderTextColor={theme.muted}
               multiline
               numberOfLines={3}
               onFocus={() => setActiveInput("notes")}
@@ -226,22 +228,22 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Pricing Summary Card */}
-        <View style={styles.priceCard}>
+        <View style={[styles.priceCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
           <View>
-            <Text style={styles.priceLabel}>ESTIMATED ROUTE TARIFF</Text>
-            <Text style={styles.priceSubtext}>
+            <Text style={[styles.priceLabel, { color: theme.text }]}>ESTIMATED ROUTE TARIFF</Text>
+            <Text style={[styles.priceSubtext, { color: theme.muted }]}>
               Calculated on Category & Cargo Weight
             </Text>
           </View>
-          <Text style={[styles.priceValueText, styles.monoText]}>
+          <Text style={[styles.priceValueText, styles.monoText, { color: theme.primary }]}>
             ${estimatedPrice.toFixed(2)}
           </Text>
         </View>
 
         {/* Action Button */}
-        <Pressable style={styles.submitButton} onPress={handleBook}>
-          <IconSymbol name="plus.circle.fill" size={20} color="#18181B" />
-          <Text style={styles.submitButtonText}>DISPATCH LOGISTICS ROUTE</Text>
+        <Pressable style={[styles.submitButton, { backgroundColor: theme.primary }]} onPress={handleBook}>
+          <IconSymbol name="plus.circle.fill" size={20} color={theme.primaryText} />
+          <Text style={[styles.submitButtonText, { color: theme.primaryText }]}>DISPATCH LOGISTICS ROUTE</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -251,7 +253,6 @@ export default function BookShipmentScreen() {
 const styles = StyleSheet.create({
   keyboardContainer: {
     flex: 1,
-    backgroundColor: "#18181B",
   },
   container: {
     flex: 1,
@@ -267,41 +268,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#27272A",
   },
   modalTitle: {
     fontSize: 16,
     fontWeight: "900",
-    color: "#FAFAFA",
     letterSpacing: 1,
   },
   closeButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: "#27272A",
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#3F3F46",
   },
   closeText: {
     fontSize: 10,
-    color: "#71717A",
     fontWeight: "800",
     letterSpacing: 0.5,
   },
   sectionCard: {
-    backgroundColor: "#27272A",
     borderRadius: 8,
     borderCurve: "continuous",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     padding: 16,
     gap: 14,
   },
   sectionHeader: {
     fontSize: 12,
     fontWeight: "900",
-    color: "#CCFF00",
     letterSpacing: 1,
     marginBottom: 4,
   },
@@ -311,22 +304,17 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 10,
     fontWeight: "800",
-    color: "#71717A",
     letterSpacing: 0.5,
   },
   textInput: {
-    backgroundColor: "#18181B",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     borderRadius: 6,
     borderCurve: "continuous",
-    color: "#FAFAFA",
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
   },
   textInputActive: {
-    borderColor: "#CCFF00",
   },
   textAreaInput: {
     height: 70,
@@ -339,32 +327,24 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   categoryPill: {
-    backgroundColor: "#18181B",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     borderRadius: 6,
     borderCurve: "continuous",
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
   categoryPillActive: {
-    borderColor: "#CCFF00",
-    backgroundColor: "#CCFF001A",
   },
   categoryText: {
-    color: "#71717A",
     fontSize: 11,
     fontWeight: "700",
   },
   categoryTextActive: {
-    color: "#CCFF00",
   },
   weightControlGroup: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#18181B",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     borderRadius: 6,
     borderCurve: "continuous",
     padding: 12,
@@ -372,7 +352,6 @@ const styles = StyleSheet.create({
   weightValueText: {
     fontSize: 18,
     fontWeight: "900",
-    color: "#FAFAFA",
     marginTop: 4,
   },
   weightButtons: {
@@ -382,16 +361,13 @@ const styles = StyleSheet.create({
   weightAdjustButton: {
     width: 44,
     height: 44,
-    backgroundColor: "#27272A",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     borderRadius: 6,
     borderCurve: "continuous",
     alignItems: "center",
     justifyContent: "center",
   },
   weightAdjustText: {
-    color: "#FAFAFA",
     fontSize: 22,
     fontWeight: "700",
   },
@@ -399,9 +375,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#27272A",
     borderWidth: 1,
-    borderColor: "#3F3F46",
     borderRadius: 8,
     borderCurve: "continuous",
     padding: 16,
@@ -409,25 +383,21 @@ const styles = StyleSheet.create({
   priceLabel: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#FAFAFA",
     letterSpacing: 0.5,
   },
   priceSubtext: {
     fontSize: 10,
-    color: "#71717A",
     marginTop: 2,
   },
   priceValueText: {
     fontSize: 22,
     fontWeight: "900",
-    color: "#CCFF00",
   },
   monoText: {
     fontFamily: Platform.OS === "ios" ? "Courier New" : "monospace",
     fontVariant: ["tabular-nums"],
   },
   submitButton: {
-    backgroundColor: "#CCFF00",
     paddingVertical: 14,
     borderRadius: 8,
     borderCurve: "continuous",
@@ -438,7 +408,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   submitButtonText: {
-    color: "#18181B",
     fontWeight: "900",
     fontSize: 14,
     letterSpacing: 0.5,

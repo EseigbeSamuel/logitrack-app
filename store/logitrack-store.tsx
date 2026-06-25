@@ -30,6 +30,13 @@ export interface Shipment {
   estimatedDelivery: string;
 }
 
+export interface ChatMessage {
+  id: string;
+  text: string;
+  timestamp: string;
+  senderRole: 'customer' | 'rider';
+}
+
 export interface RiderStats {
   isOnline: boolean;
   earnings: number;
@@ -41,7 +48,9 @@ interface LogiTrackContextType {
   activeRole: 'customer' | 'rider';
   shipments: Shipment[];
   riderStats: RiderStats;
-  switchRole: (role: 'customer' | 'rider') => void;
+  chats: Record<string, ChatMessage[]>;
+  isAuthenticated: boolean;
+  hasSeenOnboarding: boolean;
   createShipment: (data: {
     senderName: string;
     senderAddress: string;
@@ -56,6 +65,11 @@ interface LogiTrackContextType {
   reportDelay: (id: string, reason: string) => void;
   clearDelay: (id: string) => void;
   toggleOnline: () => void;
+  sendMessage: (shipmentId: string, text: string) => void;
+  login: (role: 'customer' | 'rider') => void;
+  logout: () => void;
+  completeOnboarding: () => void;
+  deleteAccount: () => void;
   resetStore: () => void;
 }
 
@@ -181,10 +195,28 @@ export function LogiTrackProvider({ children }: { children: React.ReactNode }) {
   const [activeRole, setActiveRole] = useState<'customer' | 'rider'>('customer');
   const [shipments, setShipments] = useState<Shipment[]>(DEFAULT_SHIPMENTS);
   const [riderStats, setRiderStats] = useState<RiderStats>(DEFAULT_RIDER_STATS);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [chats, setChats] = useState<Record<string, ChatMessage[]>>({
+    'LT-4567': [
+      { id: 'msg-1', text: 'Hi, are you on your way?', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), senderRole: 'customer' },
+      { id: 'msg-2', text: 'Yes, stuck in traffic but moving.', timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(), senderRole: 'rider' },
+    ]
+  });
 
-  const switchRole = (role: 'customer' | 'rider') => {
-    setActiveRole(role);
-    triggerHaptic('medium');
+  const sendMessage = (shipmentId: string, text: string) => {
+    const newMessage: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      text,
+      timestamp: new Date().toISOString(),
+      senderRole: activeRole,
+    };
+    
+    setChats(prev => ({
+      ...prev,
+      [shipmentId]: [...(prev[shipmentId] || []), newMessage]
+    }));
+    triggerHaptic('light');
   };
 
   const createShipment = (data: {
@@ -328,9 +360,37 @@ export function LogiTrackProvider({ children }: { children: React.ReactNode }) {
     triggerHaptic('medium');
   };
 
+  const login = (role: 'customer' | 'rider') => {
+    setActiveRole(role);
+    setIsAuthenticated(true);
+    triggerHaptic('success');
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    triggerHaptic('medium');
+  };
+
+  const completeOnboarding = () => {
+    setHasSeenOnboarding(true);
+    triggerHaptic('light');
+  };
+
+  const deleteAccount = () => {
+    setShipments(DEFAULT_SHIPMENTS);
+    setRiderStats(DEFAULT_RIDER_STATS);
+    setChats({});
+    setIsAuthenticated(false);
+    setActiveRole('customer');
+    triggerHaptic('warning');
+  };
+
   const resetStore = () => {
     setShipments(DEFAULT_SHIPMENTS);
     setRiderStats(DEFAULT_RIDER_STATS);
+    setChats({});
+    setIsAuthenticated(false);
+    setHasSeenOnboarding(false);
     setActiveRole('customer');
     triggerHaptic('medium');
   };
@@ -340,16 +400,23 @@ export function LogiTrackProvider({ children }: { children: React.ReactNode }) {
       activeRole,
       shipments,
       riderStats,
-      switchRole,
+      chats,
+      isAuthenticated,
+      hasSeenOnboarding,
       createShipment,
       acceptTask,
       updateShipmentStatus,
       reportDelay,
       clearDelay,
       toggleOnline,
+      sendMessage,
+      login,
+      logout,
+      completeOnboarding,
+      deleteAccount,
       resetStore,
     }),
-    [activeRole, shipments, riderStats]
+    [activeRole, shipments, riderStats, chats, isAuthenticated, hasSeenOnboarding]
   );
 
   return <LogiTrackContext.Provider value={value}>{children}</LogiTrackContext.Provider>;

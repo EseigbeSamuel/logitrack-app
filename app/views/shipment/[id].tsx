@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ShipmentStatus, useLogiTrack } from "@/store/logitrack-store";
+import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export default function ShipmentDetailScreen() {
   const router = useRouter();
+  const theme = useThemeColors();
   const { id } = useLocalSearchParams();
   const {
     activeRole,
@@ -28,19 +30,19 @@ export default function ShipmentDetailScreen() {
 
   if (!shipment) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
         <IconSymbol
           name="exclamationmark.triangle.fill"
           size={32}
-          color="#EF4444"
+          color={theme.danger}
         />
-        <Text style={styles.errorTitle}>CONSIGNMENT UNREGISTERED</Text>
-        <Text style={styles.errorText}>
+        <Text style={[styles.errorTitle, { color: theme.danger }]}>CONSIGNMENT UNREGISTERED</Text>
+        <Text style={[styles.errorText, { color: theme.muted }]}>
           The tracking number ID &apos;{id}&apos; was not found in active
           database registries.
         </Text>
-        <Pressable style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backBtnText}>RETURN TO DASHBOARD</Text>
+        <Pressable style={[styles.backBtn, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={() => router.back()}>
+          <Text style={[styles.backBtnText, { color: theme.primary }]}>RETURN TO DASHBOARD</Text>
         </Pressable>
       </View>
     );
@@ -106,21 +108,21 @@ export default function ShipmentDetailScreen() {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
       contentInsetAdjustmentBehavior="automatic"
     >
       {/* Alert delay warning banner */}
       {shipment.delayReason && (
-        <View style={styles.alertBanner}>
+        <View style={[styles.alertBanner, { backgroundColor: theme.warningBg, borderColor: theme.warning }]}>
           <IconSymbol
             name="exclamationmark.triangle.fill"
             size={20}
-            color="#EAB308"
+            color={theme.warning}
           />
           <View style={styles.alertTextWrapper}>
-            <Text style={styles.alertTitle}>ROUTE INTERRUPTED</Text>
-            <Text style={styles.alertSubtitle}>
+            <Text style={[styles.alertTitle, { color: theme.warning }]}>ROUTE INTERRUPTED</Text>
+            <Text style={[styles.alertSubtitle, { color: theme.warning }]}>
               Rider reported: {shipment.delayReason.toUpperCase()}
             </Text>
           </View>
@@ -128,26 +130,26 @@ export default function ShipmentDetailScreen() {
       )}
 
       {/* Cargo Overview Card */}
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
         <View style={styles.cardHeaderRow}>
           <View>
-            <Text style={styles.sectionHeader}>CARGO MANIFEST</Text>
-            <Text style={[styles.manifestId, styles.monoText]}>
+            <Text style={[styles.sectionHeader, { color: theme.muted }]}>CARGO MANIFEST</Text>
+            <Text style={[styles.manifestId, styles.monoText, { color: theme.text }]}>
               {shipment.id}
             </Text>
           </View>
           <View
             style={[
-              styles.tagBadge,
-              shipment.delayReason ? styles.tagWarning : styles.tagNominal,
+              styles.tagBadge, { backgroundColor: theme.mutedBg },
+              shipment.delayReason ? { backgroundColor: theme.dangerBg } : { backgroundColor: theme.successBg },
             ]}
           >
             <Text
               style={[
-                styles.tagText,
+                styles.tagText, { color: theme.muted },
                 shipment.delayReason
-                  ? styles.tagTextWarning
-                  : styles.tagTextNominal,
+                  ? { color: theme.danger }
+                  : { color: theme.success },
               ]}
             >
               {shipment.delayReason ? "EXCEPTION" : "NOMINAL"}
@@ -155,53 +157,53 @@ export default function ShipmentDetailScreen() {
           </View>
         </View>
 
-        <View style={styles.addressBox}>
+        <View style={[styles.addressBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
           <View style={styles.addressItem}>
             <View
-              style={[styles.nodeIndicator, { backgroundColor: "#CCFF00" }]}
+              style={[styles.nodeIndicator, { backgroundColor: theme.primary }]}
             />
             <View style={{ flex: 1 }}>
-              <Text style={styles.addressRole}>ORIGIN SHIPPED FROM</Text>
-              <Text style={styles.addressNameText}>{shipment.senderName}</Text>
-              <Text style={styles.addressValText}>
+              <Text style={[styles.addressRole, { color: theme.muted }]}>ORIGIN SHIPPED FROM</Text>
+              <Text style={[styles.addressNameText, { color: theme.text }]}>{shipment.senderName}</Text>
+              <Text style={[styles.addressValText, { color: theme.muted }]}>
                 {shipment.senderAddress}
               </Text>
             </View>
           </View>
 
-          <View style={styles.addressConnectorLine} />
+          <View style={[styles.addressConnectorLine, { backgroundColor: theme.border }]} />
 
           <View style={styles.addressItem}>
             <View
-              style={[styles.nodeIndicator, { backgroundColor: "#60A5FA" }]}
+              style={[styles.nodeIndicator, { backgroundColor: theme.info }]}
             />
             <View style={{ flex: 1 }}>
-              <Text style={styles.addressRole}>DELIVERY DESTINATION</Text>
-              <Text style={styles.addressNameText}>
+              <Text style={[styles.addressRole, { color: theme.muted }]}>DELIVERY DESTINATION</Text>
+              <Text style={[styles.addressNameText, { color: theme.text }]}>
                 {shipment.recipientName}
               </Text>
-              <Text style={styles.addressValText}>
+              <Text style={[styles.addressValText, { color: theme.muted }]}>
                 {shipment.recipientAddress}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.manifestMetricsGrid}>
+        <View style={[styles.manifestMetricsGrid, { borderColor: theme.border }]}>
           <View style={styles.manifestMetric}>
-            <Text style={styles.metricLabel}>CATEGORY</Text>
-            <Text style={styles.metricVal}>{shipment.packageCategory}</Text>
+            <Text style={[styles.metricLabel, { color: theme.muted }]}>CATEGORY</Text>
+            <Text style={[styles.metricVal, { color: theme.text }]}>{shipment.packageCategory}</Text>
           </View>
           <View style={styles.manifestMetric}>
-            <Text style={styles.metricLabel}>WEIGHT</Text>
-            <Text style={[styles.metricVal, styles.monoText]}>
+            <Text style={[styles.metricLabel, { color: theme.muted }]}>WEIGHT</Text>
+            <Text style={[styles.metricVal, styles.monoText, { color: theme.text }]}>
               {shipment.weight} KG
             </Text>
           </View>
           <View style={styles.manifestMetric}>
-            <Text style={styles.metricLabel}>TARIFF</Text>
+            <Text style={[styles.metricLabel, { color: theme.muted }]}>TARIFF</Text>
             <Text
-              style={[styles.metricVal, styles.monoText, { color: "#CCFF00" }]}
+              style={[styles.metricVal, styles.monoText, { color: theme.primary }]}
             >
               ${shipment.price.toFixed(2)}
             </Text>
@@ -209,9 +211,9 @@ export default function ShipmentDetailScreen() {
         </View>
 
         {shipment.notes ? (
-          <View style={styles.instructionsBox}>
-            <Text style={styles.instructionsHeader}>HANDLING INSTRUCTIONS</Text>
-            <Text style={styles.instructionsText}>
+          <View style={[styles.instructionsBox, { backgroundColor: theme.mutedBg, borderLeftColor: theme.primary }]}>
+            <Text style={[styles.instructionsHeader, { color: theme.primary }]}>HANDLING INSTRUCTIONS</Text>
+            <Text style={[styles.instructionsText, { color: theme.text }]}>
               &quot;{shipment.notes}&quot;
             </Text>
           </View>
@@ -219,26 +221,26 @@ export default function ShipmentDetailScreen() {
       </View>
 
       {/* Driver Assigned Card */}
-      <View style={styles.card}>
-        <Text style={styles.sectionHeader}>LOGISTICS AGENT</Text>
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionHeader, { color: theme.muted }]}>LOGISTICS AGENT</Text>
         {shipment.driverId ? (
           <View style={styles.agentRow}>
-            <View style={styles.agentAvatar}>
-              <Text style={styles.agentAvatarText}>MV</Text>
+            <View style={[styles.agentAvatar, { backgroundColor: theme.background, borderColor: theme.border }]}>
+              <Text style={[styles.agentAvatarText, { color: theme.text }]}>MV</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.agentName}>{shipment.driverName}</Text>
-              <Text style={[styles.agentId, styles.monoText]}>
+              <Text style={[styles.agentName, { color: theme.text }]}>{shipment.driverName}</Text>
+              <Text style={[styles.agentId, styles.monoText, { color: theme.muted }]}>
                 RIDER ID: {shipment.driverId}
               </Text>
             </View>
-            <View style={styles.assignedBadge}>
-              <Text style={styles.assignedBadgeText}>DISPATCHED</Text>
+            <View style={[styles.assignedBadge, { backgroundColor: theme.infoBg }]}>
+              <Text style={[styles.assignedBadgeText, { color: theme.info }]}>DISPATCHED</Text>
             </View>
           </View>
         ) : (
           <View style={styles.unassignedRow}>
-            <Text style={styles.unassignedText}>
+            <Text style={[styles.unassignedText, { color: theme.muted }]}>
               UNASSIGNED — Awaiting Rider Dispatch
             </Text>
           </View>
@@ -247,11 +249,11 @@ export default function ShipmentDetailScreen() {
 
       {/* Interactive Driver Override Panels */}
       {isAssignedRider && (
-        <View style={[styles.card, { borderColor: "#CCFF0044" }]}>
-          <Text style={[styles.sectionHeader, { color: "#CCFF00" }]}>
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.primary + '44' }]}>
+          <Text style={[styles.sectionHeader, { color: theme.primary }]}>
             COURIER OVERRIDE CONTROLS
           </Text>
-          <Text style={styles.overrideHelper}>
+          <Text style={[styles.overrideHelper, { color: theme.muted }]}>
             Update cargo transit steps and broadcast delays to client terminals
             in real-time.
           </Text>
@@ -259,7 +261,7 @@ export default function ShipmentDetailScreen() {
           {/* Action Step trigger */}
           {driverAction ? (
             <Pressable
-              style={styles.overrideCta}
+              style={[styles.overrideCta, { backgroundColor: theme.primary }]}
               onPress={() =>
                 updateShipmentStatus(
                   shipment.id,
@@ -271,18 +273,18 @@ export default function ShipmentDetailScreen() {
               <IconSymbol
                 name={driverAction.icon as any}
                 size={16}
-                color="#18181B"
+                color={theme.primaryText}
               />
-              <Text style={styles.overrideCtaText}>{driverAction.label}</Text>
+              <Text style={[styles.overrideCtaText, { color: theme.primaryText }]}>{driverAction.label}</Text>
             </Pressable>
           ) : (
-            <View style={styles.nominalFinishBox}>
+            <View style={[styles.nominalFinishBox, { backgroundColor: theme.successBg, borderColor: theme.success }]}>
               <IconSymbol
                 name="checkmark.circle.fill"
                 size={16}
-                color="#10B981"
+                color={theme.success}
               />
-              <Text style={styles.nominalFinishText}>
+              <Text style={[styles.nominalFinishText, { color: theme.success }]}>
                 LOGISTICS COMPLETE: ROUTE FULLY RESOLVED
               </Text>
             </View>
@@ -294,15 +296,15 @@ export default function ShipmentDetailScreen() {
               {!shipment.delayReason ? (
                 <>
                   <Pressable
-                    style={styles.delayReporterToggle}
+                    style={[styles.delayReporterToggle, { backgroundColor: theme.card, borderColor: theme.border }]}
                     onPress={() => setShowDelayPicker(!showDelayPicker)}
                   >
                     <IconSymbol
                       name="exclamationmark.triangle.fill"
                       size={14}
-                      color="#EAB308"
+                      color={theme.warning}
                     />
-                    <Text style={styles.delayReporterToggleText}>
+                    <Text style={[styles.delayReporterToggleText, { color: theme.text }]}>
                       {showDelayPicker
                         ? "CLOSE EXCEPTION PANELS"
                         : "REPORT TRANSIT EXCEPTION"}
@@ -310,17 +312,17 @@ export default function ShipmentDetailScreen() {
                   </Pressable>
 
                   {showDelayPicker && (
-                    <View style={styles.delayOptionsBox}>
+                    <View style={[styles.delayOptionsBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
                       {delayReasons.map((reason) => (
                         <Pressable
                           key={reason}
-                          style={styles.delayOptionBtn}
+                          style={[styles.delayOptionBtn, { borderBottomColor: theme.card }]}
                           onPress={() => {
                             reportDelay(shipment.id, reason);
                             setShowDelayPicker(false);
                           }}
                         >
-                          <Text style={styles.delayOptionText}>
+                          <Text style={[styles.delayOptionText, { color: theme.muted }]}>
                             {reason.toUpperCase()}
                           </Text>
                         </Pressable>
@@ -330,15 +332,15 @@ export default function ShipmentDetailScreen() {
                 </>
               ) : (
                 <Pressable
-                  style={styles.clearDelayBtn}
+                  style={[styles.clearDelayBtn, { backgroundColor: theme.successBg, borderColor: theme.success }]}
                   onPress={() => clearDelay(shipment.id)}
                 >
                   <IconSymbol
                     name="checkmark.circle.fill"
                     size={14}
-                    color="#10B981"
+                    color={theme.success}
                   />
-                  <Text style={styles.clearDelayBtnText}>
+                  <Text style={[styles.clearDelayBtnText, { color: theme.success }]}>
                     RESOLVE & CLEAR EXCEPTION
                   </Text>
                 </Pressable>
@@ -349,8 +351,8 @@ export default function ShipmentDetailScreen() {
       )}
 
       {/* Logistics Status logs Timeline */}
-      <View style={styles.card}>
-        <Text style={styles.sectionHeader}>LOGISTICS TRACKING TIMELINE</Text>
+      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionHeader, { color: theme.muted }]}>LOGISTICS TRACKING TIMELINE</Text>
 
         <View style={styles.timelineList}>
           {shipment.statusLogs.map((log, index) => {
@@ -363,33 +365,33 @@ export default function ShipmentDetailScreen() {
                 <View style={styles.timelineGraphicColumn}>
                   <View
                     style={[
-                      styles.timelineDot,
-                      isLast && styles.timelineDotActive,
-                      isDelay && { backgroundColor: "#EAB308" },
-                      isClear && { backgroundColor: "#10B981" },
+                      styles.timelineDot, { backgroundColor: theme.border },
+                      isLast && [styles.timelineDotActive, { backgroundColor: theme.primary, boxShadow: '0 0 4px ' + theme.primary }],
+                      isDelay && { backgroundColor: theme.warning },
+                      isClear && { backgroundColor: theme.success },
                     ]}
                   />
-                  {!isLast && <View style={styles.timelineConnector} />}
+                  {!isLast && <View style={[styles.timelineConnector, { backgroundColor: theme.border }]} />}
                 </View>
 
                 <View style={styles.timelineContent}>
                   <View style={styles.timelineTitleRow}>
                     <Text
                       style={[
-                        styles.timelineStatusTitle,
-                        isLast && styles.timelineStatusTitleActive,
-                        isDelay && { color: "#EAB308" },
-                        isClear && { color: "#10B981" },
+                        styles.timelineStatusTitle, { color: theme.muted },
+                        isLast && [styles.timelineStatusTitleActive, { color: theme.text }],
+                        isDelay && { color: theme.warning },
+                        isClear && { color: theme.success },
                       ]}
                     >
                       {log.status.toUpperCase().replace("_", " ")}
                     </Text>
-                    <Text style={[styles.timelineTimeText, styles.monoText]}>
+                    <Text style={[styles.timelineTimeText, styles.monoText, { color: theme.muted }]}>
                       {formatTime(log.timestamp)}
                     </Text>
                   </View>
-                  <Text style={styles.timelineNote}>{log.note}</Text>
-                  <Text style={styles.timelineDate}>
+                  <Text style={[styles.timelineNote, { color: theme.text }]}>{log.note}</Text>
+                  <Text style={[styles.timelineDate, { color: theme.muted }]}>
                     {formatDate(log.timestamp)}
                   </Text>
                 </View>
