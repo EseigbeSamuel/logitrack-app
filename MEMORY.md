@@ -18,6 +18,11 @@ Migrate the LogiTrack mobile application's UI from legacy `StyleSheet` objects t
 - Successfully mapped dynamic `StyleSheet` color attributes to Tailwind utility classes (e.g., `bg-card`, `text-primary`, `border-border`).
 - Converted complex ternary layout conditions into declarative string templates.
 - **Deduplication:** Swept through all core screens to remove duplicated, redundant CSS rules generated during the migration (e.g., conflicting `text-muted` vs `text-foreground` and `bg-[#...]` variations).
+- **Theme Restoration:** Synchronized the injected Uniwind variables in `global.css` back to the original `constants/theme.ts` specification, fully restoring the custom Zinc dark mode and Neon Yellow (`#CCFF00`) branding across the application.
+- **UI Stabilization:** 
+  - Restored proper `tintColor` styling for active native tabs utilizing dynamic theme colors.
+  - Re-architected the rider dashboard sub-tabs into a proper native horizontal segmented control format.
+  - Eliminated Form Sheet scroll issues by replacing `KeyboardAvoidingView` with iOS-native `contentInsetAdjustmentBehavior="automatic"`.
 - Enforced strict CSS variable syntax where necessary for arbitrary values (e.g., `shadow-[0_0_4px_var(--color-primary)]`).
 - Maintained a strict 0-error TypeScript build (`npx tsc --noEmit`).
 

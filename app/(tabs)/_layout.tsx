@@ -1,10 +1,13 @@
 import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
 import React from "react";
 import { Platform } from "react-native";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 export default function TabLayout() {
+  const theme = useThemeColors();
+
   return (
-    <NativeTabs>
+    <NativeTabs tintColor={theme.primary}>
       <NativeTabs.Trigger name="index">
         <Icon sf="house.fill" />
         <Label>Home</Label>

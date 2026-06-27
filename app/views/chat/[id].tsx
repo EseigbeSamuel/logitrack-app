@@ -25,8 +25,8 @@ export default function ChatRoomScreen() {
 
   if (!shipment) {
     return (
-      <View className="flex-1 bg-background bg-background">
-        <Text className="text-center mt-10 font-extrabold text-danger text-danger">Comms channel not found.</Text>
+      <View className="flex-1 bg-background">
+        <Text className="text-center mt-10 font-extrabold text-danger">Comms channel not found.</Text>
       </View>
     );
   }
@@ -40,7 +40,7 @@ export default function ChatRoomScreen() {
 
   return (
     <KeyboardAvoidingView 
-      className="flex-1 bg-background bg-background" 
+      className="flex-1 bg-background" 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
@@ -60,7 +60,7 @@ export default function ChatRoomScreen() {
       >
         {messages.length === 0 ? (
           <View className="align-center mt-10">
-            <Text className="text-xs font-bold text-muted text-muted">End-to-end encrypted channel established.</Text>
+            <Text className="text-xs font-bold text-muted">End-to-end encrypted channel established.</Text>
           </View>
         ) : (
           messages.map((msg) => {
@@ -73,7 +73,7 @@ export default function ChatRoomScreen() {
                 <Text className={`text-sm font-semibold ${isMe ? 'text-[#18181B]' : 'text-foreground'}`}>
                   {msg.text}
                 </Text>
-                <Text className="text-[9px] font-extrabold mt-1 self-end text-muted text-muted">
+                <Text className="text-[9px] font-extrabold mt-1 self-end text-muted">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
               </View>
@@ -82,9 +82,9 @@ export default function ChatRoomScreen() {
         )}
       </ScrollView>
 
-      <View className="flex-row p-3 gap-2 border-t bg-card border-border bg-card border-border">
+      <View className="flex-row p-3 gap-2 border-t bg-card border-border">
         <TextInput
-          className="flex-1 border rounded-full px-4 py-2.5 text-sm font-semibold bg-background border-border text-foreground bg-background border-border text-foreground"
+          className="flex-1 border rounded-full px-4 py-2.5 text-sm font-semibold bg-background border-border text-foreground"
           value={inputText}
           onChangeText={setInputText}
           placeholder="Transmit message..."

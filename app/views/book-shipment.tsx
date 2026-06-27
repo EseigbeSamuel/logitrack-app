@@ -1,3 +1,6 @@
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { PackageCategory, useLogiTrack } from "@/store/logitrack-store";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -5,14 +8,10 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { PackageCategory, useLogiTrack } from "@/store/logitrack-store";
-import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export default function BookShipmentScreen() {
   const router = useRouter();
@@ -69,29 +68,37 @@ export default function BookShipmentScreen() {
   ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
       <ScrollView
         className="flex-1"
-        contentContainerClassName="p-4 gap-4 pb-12"
+        contentContainerClassName="p-4 gap-4 pb-12 mb-12"
         keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="automatic"
       >
         <View className="flex-row items-center justify-between py-2 border-b border-border border-b-border">
-          <Text className="text-base font-black tracking-widest text-foreground text-foreground">BOOK LOGISTICS ROUTE</Text>
-          <Pressable onPress={() => router.back()} className="py-1.5 px-3 rounded border bg-card border-border bg-card border-border">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">CANCEL</Text>
+          <Text className="text-base font-black tracking-widest text-foreground">
+            BOOK LOGISTICS ROUTE
+          </Text>
+          <Pressable
+            onPress={() => router.back()}
+            className="py-1.5 px-3 rounded border bg-card border-border"
+          >
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              CANCEL
+            </Text>
           </Pressable>
         </View>
 
         {/* Sender Section */}
-        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
-          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">SENDER ORIGIN</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary">
+            SENDER ORIGIN
+          </Text>
           <View className="gap-1.5">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">SENDER NAME</Text>
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              SENDER NAME
+            </Text>
             <TextInput
-              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderName" ? 'border-primary' : ''}`}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderName" ? "border-primary" : ""}`}
               value={senderName}
               onChangeText={setSenderName}
               placeholder="Full Name / Company"
@@ -102,9 +109,11 @@ export default function BookShipmentScreen() {
           </View>
 
           <View className="gap-1.5">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">ORIGIN ADDRESS</Text>
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              ORIGIN ADDRESS
+            </Text>
             <TextInput
-              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderAddress" ? 'border-primary' : ''}`}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderAddress" ? "border-primary" : ""}`}
               value={senderAddress}
               onChangeText={setSenderAddress}
               placeholder="Street, City, Building Number"
@@ -116,12 +125,16 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Recipient Section */}
-        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
-          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">RECIPIENT DESTINATION</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary">
+            RECIPIENT DESTINATION
+          </Text>
           <View className="gap-1.5">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">RECIPIENT NAME</Text>
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              RECIPIENT NAME
+            </Text>
             <TextInput
-              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientName" ? 'border-primary' : ''}`}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientName" ? "border-primary" : ""}`}
               value={recipientName}
               onChangeText={setRecipientName}
               placeholder="Full Name / Clinic / Facility"
@@ -132,9 +145,11 @@ export default function BookShipmentScreen() {
           </View>
 
           <View className="gap-1.5">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">DESTINATION ADDRESS</Text>
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              DESTINATION ADDRESS
+            </Text>
             <TextInput
-              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientAddress" ? 'border-primary' : ''}`}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientAddress" ? "border-primary" : ""}`}
               value={recipientAddress}
               onChangeText={setRecipientAddress}
               placeholder="Street, City, Suite / Room"
@@ -146,19 +161,23 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Package Specifications */}
-        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
-          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">CARGO SPECIFICATIONS</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary">
+            CARGO SPECIFICATIONS
+          </Text>
 
-          <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">CATEGORY</Text>
+          <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+            CATEGORY
+          </Text>
           <View className="flex-row flex-wrap gap-2 mb-1.5">
             {categories.map((cat) => (
               <Pressable
                 key={cat}
-                className={`border rounded-md py-2 px-3 bg-background border-border ${packageCategory === cat ? 'border-primary bg-primary/10' : ''}`}
+                className={`border rounded-md py-2 px-3 bg-background border-border ${packageCategory === cat ? "border-primary bg-primary/10" : ""}`}
                 onPress={() => setPackageCategory(cat)}
               >
                 <Text
-                  className={`text-[11px] font-bold text-muted ${packageCategory === cat ? 'text-primary' : ''}`}
+                  className={`text-[11px] font-bold text-muted ${packageCategory === cat ? "text-primary" : ""}`}
                 >
                   {cat.toUpperCase()}
                 </Text>
@@ -166,33 +185,37 @@ export default function BookShipmentScreen() {
             ))}
           </View>
 
-          <View className="flex-row items-center border rounded-md p-3 bg-background border-border bg-background border-border">
+          <View className="flex-row items-center border rounded-md p-3 bg-background border-border">
             <View style={{ flex: 1 }}>
-              <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">WEIGHT (KG)</Text>
-              <Text className="text-lg font-black mt-1 text-foreground font-mono tabular-nums text-foreground">
+              <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+                WEIGHT (KG)
+              </Text>
+              <Text className="text-lg font-black mt-1 text-foreground font-mono tabular-nums">
                 {weight.toFixed(1)} KG
               </Text>
             </View>
             <View className="flex-row gap-2">
               <Pressable
-                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border bg-card border-border"
+                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border"
                 onPress={() => adjustWeight(-0.5)}
               >
-                <Text className="text-[22px] font-bold text-foreground text-foreground">-</Text>
+                <Text className="text-[22px] font-bold text-foreground">-</Text>
               </Pressable>
               <Pressable
-                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border bg-card border-border"
+                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border"
                 onPress={() => adjustWeight(0.5)}
               >
-                <Text className="text-[22px] font-bold text-foreground text-foreground">+</Text>
+                <Text className="text-[22px] font-bold text-foreground">+</Text>
               </Pressable>
             </View>
           </View>
 
           <View className="gap-1.5">
-            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">SPECIAL INSTRUCTIONS</Text>
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted">
+              SPECIAL INSTRUCTIONS
+            </Text>
             <TextInput
-              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground h-[70px] text-top ${activeInput === "notes" ? 'border-primary' : ''}`}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground h-[70px] text-top ${activeInput === "notes" ? "border-primary" : ""}`}
               value={notes}
               onChangeText={setNotes}
               placeholder="Add loading notes, gate codes, or handling warnings"
@@ -206,25 +229,34 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Pricing Summary Card */}
-        <View className="flex-row items-center justify-between border rounded-lg p-4 bg-card border-border bg-card border-border">
+        <View className="flex-row items-center justify-between border rounded-lg p-4 bg-card border-border">
           <View>
-            <Text className="text-xs font-extrabold tracking-wider text-foreground text-foreground">ESTIMATED ROUTE TARIFF</Text>
-            <Text className="text-[10px] mt-0.5 text-muted text-muted">
+            <Text className="text-xs font-extrabold tracking-wider text-foreground">
+              ESTIMATED ROUTE TARIFF
+            </Text>
+            <Text className="text-[10px] mt-0.5 text-muted">
               Calculated on Category & Cargo Weight
             </Text>
           </View>
-          <Text className="text-[22px] font-black text-primary font-mono tabular-nums text-primary">
+          <Text className="text-[22px] font-black text-primary font-mono tabular-nums">
             ${estimatedPrice.toFixed(2)}
           </Text>
         </View>
 
         {/* Action Button */}
-        <Pressable className="py-3.5 rounded-lg flex-row items-center justify-center gap-2 mt-2 bg-primary bg-primary" onPress={handleBook}>
-          <IconSymbol name="plus.circle.fill" size={20} color={theme.primaryText} />
-          <Text className="font-black text-sm tracking-wider text-[#18181B] text-[#18181B]">DISPATCH LOGISTICS ROUTE</Text>
+        <Pressable
+          className="py-3.5 rounded-lg flex-row items-center justify-center gap-2 mt-2 bg-primary"
+          onPress={handleBook}
+        >
+          <IconSymbol
+            name="plus.circle.fill"
+            size={20}
+            color={theme.primaryText}
+          />
+          <Text className="font-black text-sm tracking-wider text-[#18181B]">
+            DISPATCH LOGISTICS ROUTE
+          </Text>
         </Pressable>
       </ScrollView>
-    </KeyboardAvoidingView>
   );
 }
-

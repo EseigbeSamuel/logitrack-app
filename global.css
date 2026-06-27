@@ -5,48 +5,48 @@
   :root {
     @variant dark {
       /* Backgrounds */
-      --color-background: #000000;
-      --color-background-secondary: #111827;
-      --color-card: #1f2937;
+      --color-background: #18181B;
+      --color-background-secondary: #27272A;
+      --color-card: #27272A;
 
       /* Text colors */
-      --color-foreground: #ffffff;
-      --color-foreground-secondary: #9ca3af;
-      --color-muted: #6b7280;
+      --color-foreground: #FAFAFA;
+      --color-foreground-secondary: #A1A1AA;
+      --color-muted: #A1A1AA;
 
       /* Borders */
-      --color-border: #374151;
-      --color-border-subtle: #1f2937;
+      --color-border: #3F3F46;
+      --color-border-subtle: #27272A;
 
       /* Interactive elements */
-      --color-primary: #3b82f6;
-      --color-primary-hover: #2563eb;
-      --color-danger: #ef4444;
-      --color-success: #10b981;
-      --color-warning: #f59e0b;
+      --color-primary: #ccff00;
+      --color-primary-hover: #bce600;
+      --color-danger: #EF4444;
+      --color-success: #10B981;
+      --color-warning: #EAB308;
     }
 
     @variant light {
       /* Backgrounds */
-      --color-background: #ffffff;
-      --color-background-secondary: #f9fafb;
-      --color-card: #ffffff;
+      --color-background: #F4F4F5;
+      --color-background-secondary: #E4E4E7;
+      --color-card: #FFFFFF;
 
       /* Text colors */
-      --color-foreground: #111827;
-      --color-foreground-secondary: #6b7280;
-      --color-muted: #9ca3af;
+      --color-foreground: #18181B;
+      --color-foreground-secondary: #71717A;
+      --color-muted: #71717A;
 
       /* Borders */
-      --color-border: #e5e7eb;
-      --color-border-subtle: #f3f4f6;
+      --color-border: #E4E4E7;
+      --color-border-subtle: #F4F4F5;
 
       /* Interactive elements */
-      --color-primary: #3b82f6;
-      --color-primary-hover: #2563eb;
-      --color-danger: #ef4444;
-      --color-success: #10b981;
-      --color-warning: #f59e0b;
+      --color-primary: #ccff00;
+      --color-primary-hover: #bce600;
+      --color-danger: #EF4444;
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
     }
   }
 }

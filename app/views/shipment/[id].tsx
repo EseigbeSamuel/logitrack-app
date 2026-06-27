@@ -169,7 +169,7 @@ export default function ShipmentDetailScreen() {
             </View>
           </View>
 
-          <View className="absolute left-[17.5px] top-6 bottom-6 w-px bg-border " />
+          <View className="absolute left-[17.5px] top-6 bottom-6 w-px bg-border" />
 
           <View className="flex-row gap-3">
             <View className="w-2 h-2 rounded-full mt-1.5 bg-[#3B82F6]" />
@@ -240,8 +240,8 @@ export default function ShipmentDetailScreen() {
                 RIDER ID: {shipment.driverId}
               </Text>
             </View>
-            <View className="px-2 py-1 rounded bg-[#3B82F61F] ">
-              <Text className="text-[9px] font-black tracking-wider text-[#60A5FA] ">
+            <View className="px-2 py-1 rounded bg-[#3B82F61F]">
+              <Text className="text-[9px] font-black tracking-wider text-[#60A5FA]">
                 DISPATCHED
               </Text>
             </View>
@@ -288,7 +288,7 @@ export default function ShipmentDetailScreen() {
               </Text>
             </Pressable>
           ) : (
-            <View className="flex-row items-center justify-center gap-2 border py-3 rounded-md mt-1.5 bg-[#10B9811F] border-success ">
+            <View className="flex-row items-center justify-center gap-2 border py-3 rounded-md mt-1.5 bg-[#10B9811F] border-success">
               <IconSymbol
                 name="checkmark.circle.fill"
                 size={16}
@@ -342,7 +342,7 @@ export default function ShipmentDetailScreen() {
                 </>
               ) : (
                 <Pressable
-                  className="border py-2.5 rounded-md flex-row items-center justify-center gap-2 bg-[#10B9811F] border-success "
+                  className="border py-2.5 rounded-md flex-row items-center justify-center gap-2 bg-[#10B9811F] border-success"
                   onPress={() => clearDelay(shipment.id)}
                 >
                   <IconSymbol
@@ -378,7 +378,7 @@ export default function ShipmentDetailScreen() {
                   <View
                     className={`${isLast ? "w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_4px_var(--color-primary)]" : "w-2 h-2 rounded-full mt-1.5"} ${!isLast && isDelay ? "bg-warning" : !isLast && isClear ? "bg-success" : !isLast ? "bg-border" : ""}`}
                   />
-                  {!isLast && <View className="w-px flex-1 my-1 bg-border " />}
+                  {!isLast && <View className="w-px flex-1 my-1 bg-border" />}
                 </View>
 
                 <View className="flex-1 pb-5 pl-2 gap-1">
