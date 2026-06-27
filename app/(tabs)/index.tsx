@@ -1,26 +1,22 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Platform,
-  Dimensions,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { useLogiTrack, Shipment } from '@/store/logitrack-store';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useThemeColors } from '@/hooks/use-theme-colors';
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { useLogiTrack } from "@/store/logitrack-store";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { activeRole, shipments, riderStats, toggleOnline, updateShipmentStatus } = useLogiTrack();
+  const {
+    activeRole,
+    shipments,
+    riderStats,
+    toggleOnline,
+    updateShipmentStatus,
+  } = useLogiTrack();
   const theme = useThemeColors();
-  const styles = React.useMemo(() => createStyles(theme), [theme]);
 
-  const [searchId, setSearchId] = useState('');
+  const [searchId, setSearchId] = useState("");
 
   const handleSearch = () => {
     if (!searchId.trim()) return;
@@ -28,53 +24,63 @@ export default function HomeScreen() {
     const found = shipments.find((s) => s.id === formattedId);
     if (found) {
       router.push(`/views/shipment/${found.id}` as any);
-      setSearchId('');
+      setSearchId("");
     } else {
       alert(`Logistics route '${formattedId}' not found in active registries.`);
     }
   };
 
   // Customer statistics
-  const activeCustomerShipments = shipments.filter((s) => s.status !== 'delivered');
-  const completedCustomerShipments = shipments.filter((s) => s.status === 'delivered');
+  const activeCustomerShipments = shipments.filter(
+    (s) => s.status !== "delivered",
+  );
+  const completedCustomerShipments = shipments.filter(
+    (s) => s.status === "delivered",
+  );
 
   // Rider: Find active assigned shipment
   const activeRiderShipment = shipments.find(
-    (s) => s.driverId === 'DRV-101' && (s.status === 'picked_up' || s.status === 'in_transit')
+    (s) =>
+      s.driverId === "DRV-101" &&
+      (s.status === "picked_up" || s.status === "in_transit"),
   );
 
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      className="flex-1 bg-background"
+      contentContainerClassName="p-4 gap-4 pt-16 pb-10"
       contentInsetAdjustmentBehavior="automatic"
     >
       {/* Header Bar */}
-      <View style={styles.headerRow}>
+      <View className="flex-row items-center justify-between mb-2">
         <View>
-          <Text style={styles.headerSubtitle}>
-            {activeRole === 'customer' ? 'CLIENT COMMAND PANEL' : 'COURIER TERMINAL'}
+          <Text className="text-[10px] text-muted font-extrabold tracking-[1.5px]">
+            {activeRole === "customer"
+              ? "CLIENT COMMAND PANEL"
+              : "COURIER TERMINAL"}
           </Text>
-          <Text style={styles.headerTitle}>
-            {activeRole === 'customer' ? 'LOGITRACK CENTER' : 'OPERATOR SHIFT'}
+          <Text className="text-[22px] font-black text-foreground tracking-widest">
+            {activeRole === "customer" ? "LOGITRACK CENTER" : "OPERATOR SHIFT"}
           </Text>
         </View>
-        <View style={styles.badge}>
-          <Text style={[styles.badgeText, styles.monoText]}>
-            {activeRole === 'customer' ? 'LEVEL-01' : 'DRV-101'}
+        <View className="bg-card border border-border px-2.5 py-1.5 rounded">
+          <Text className="text-primary text-[11px] font-black font-mono tabular-nums">
+            {activeRole === "customer" ? "LEVEL-01" : "DRV-101"}
           </Text>
         </View>
       </View>
 
       {/* Customer Mode View */}
-      {activeRole === 'customer' && (
-        <View style={styles.roleContainer}>
+      {activeRole === "customer" && (
+        <View className="gap-4">
           {/* Tracking Search Input */}
-          <View style={styles.card}>
-            <Text style={styles.cardHeader}>FAST TRACK LOGISTICS ROUTE</Text>
-            <View style={styles.searchRow}>
+          <View className="bg-card border border-border rounded-lg p-4 gap-3">
+            <Text className="text-[11px] font-black text-primary tracking-[1.5px]">
+              FAST TRACK LOGISTICS ROUTE
+            </Text>
+            <View className="flex-row gap-2">
               <TextInput
-                style={[styles.searchInput, styles.monoText]}
+                className="flex-1 bg-background border border-border rounded-md text-foreground px-3 py-2.5 text-sm font-bold font-mono tabular-nums"
                 value={searchId}
                 onChangeText={setSearchId}
                 placeholder="ENTER ID (E.G. LT-1029)"
@@ -82,23 +88,38 @@ export default function HomeScreen() {
                 autoCapitalize="characters"
                 onSubmitEditing={handleSearch}
               />
-              <Pressable style={styles.searchButton} onPress={handleSearch}>
-                <Text style={styles.searchButtonText}>LOCATE</Text>
+              <Pressable
+                className="bg-[#FAFAFA] px-4 items-center justify-center rounded-md"
+                onPress={handleSearch}
+              >
+                <Text className="text-[#18181B] text-xs font-black tracking-wider">
+                  LOCATE
+                </Text>
               </Pressable>
             </View>
           </View>
 
           {/* Quick Actions & Metrics */}
-          <View style={styles.statsRow}>
-            <View style={[styles.statItem, { backgroundColor: theme.card }]}>
-              <Text style={styles.statLabel}>IN-ROUTE CARGO</Text>
-              <Text style={[styles.statValue, styles.monoText]}>
+          <View className="flex-row gap-3">
+            <View
+              className="flex-1 border border-border rounded-lg p-4 gap-1.5 bg-card"
+              style={{ backgroundColor: theme.card }}
+            >
+              <Text className="text-[10px] font-extrabold text-muted tracking-wider">
+                IN-ROUTE CARGO
+              </Text>
+              <Text className="text-2xl font-black text-foreground font-mono tabular-nums">
                 {activeCustomerShipments.length}
               </Text>
             </View>
-            <View style={[styles.statItem, { backgroundColor: theme.card }]}>
-              <Text style={styles.statLabel}>COMPLETED RUNS</Text>
-              <Text style={[styles.statValue, styles.monoText, { color: theme.success }]}>
+            <View
+              className="flex-1 border border-border rounded-lg p-4 gap-1.5 bg-card"
+              style={{ backgroundColor: theme.card }}
+            >
+              <Text className="text-[10px] font-extrabold text-muted tracking-wider">
+                COMPLETED RUNS
+              </Text>
+              <Text className="text-2xl font-black text-success font-mono tabular-nums">
                 {completedCustomerShipments.length}
               </Text>
             </View>
@@ -106,109 +127,175 @@ export default function HomeScreen() {
 
           {/* Book Cargo CTA */}
           <Pressable
-            style={styles.bookCtaButton}
-            onPress={() => router.push('/views/book-shipment' as any)}
+            className="bg-primary py-3.5 rounded-lg flex-row items-center justify-center gap-2"
+            onPress={() => router.push("/views/book-shipment" as any)}
           >
             <IconSymbol name="plus.circle.fill" size={20} color="#18181B" />
-            <Text style={styles.bookCtaText}>SCHEDULE NEW CARGO DELIVERY</Text>
+            <Text className="text-[#18181B] font-black text-[13px] tracking-wider">
+              SCHEDULE NEW CARGO DELIVERY
+            </Text>
           </Pressable>
 
           {/* Visual Tracking Map Widget */}
-          <View style={styles.card}>
-            <View style={styles.cardHeaderRow}>
-              <Text style={styles.cardHeader}>REAL-TIME SECTOR MAP</Text>
-              <View style={styles.liveIndicatorRow}>
-                <View style={styles.pulseDot} />
-                <Text style={styles.liveText}>GPS FEEDS ACTIVE</Text>
+          <View className="bg-card border border-border rounded-lg p-4 gap-3">
+            <View className="flex-row items-center justify-between mb-1">
+              <Text className="text-[11px] font-black text-primary tracking-[1.5px]">
+                REAL-TIME SECTOR MAP
+              </Text>
+              <View className="flex-row items-center gap-1.5">
+                <View className="w-1.5 h-1.5 rounded-full bg-danger" />
+                <Text className="text-danger text-[9px] font-extrabold tracking-wider">
+                  GPS FEEDS ACTIVE
+                </Text>
               </View>
             </View>
 
             {/* Tactical Grid Map Mockup */}
-            <View style={styles.mapMock}>
-              <View style={styles.mapGridLineH} />
-              <View style={[styles.mapGridLineH, { top: '33%' }]} />
-              <View style={[styles.mapGridLineH, { top: '66%' }]} />
-              <View style={styles.mapGridLineV} />
-              <View style={[styles.mapGridLineV, { left: '33%' }]} />
-              <View style={[styles.mapGridLineV, { left: '66%' }]} />
+            <View className="h-[180px] bg-background border border-border rounded-md relative overflow-hidden">
+              <View className="absolute left-0 right-0 h-[0.5px] bg-[#3F3F4640]" />
+              <View
+                className="absolute left-0 right-0 h-[0.5px] bg-[#3F3F4640]"
+                style={{ top: "33%" }}
+              />
+              <View
+                className="absolute left-0 right-0 h-[0.5px] bg-[#3F3F4640]"
+                style={{ top: "66%" }}
+              />
+              <View className="absolute top-0 bottom-0 w-[0.5px] bg-[#3F3F4640]" />
+              <View
+                className="absolute top-0 bottom-0 w-[0.5px] bg-[#3F3F4640]"
+                style={{ left: "33%" }}
+              />
+              <View
+                className="absolute top-0 bottom-0 w-[0.5px] bg-[#3F3F4640]"
+                style={{ left: "66%" }}
+              />
 
               {/* Sender Node */}
-              <View style={[styles.mapPin, { top: '70%', left: '25%' }]}>
-                <View style={styles.mapPinInner} />
-                <Text style={styles.mapPinLabel}>SND (SF)</Text>
+              <View
+                className="absolute flex-row items-center gap-1 border border-[#71717A] bg-background rounded px-1 py-0.5"
+                style={{ top: "70%", left: "25%" }}
+              >
+                <View className="w-1.5 h-1.5 rounded-full bg-[#71717A]" />
+                <Text className="text-[9px] font-extrabold text-muted">
+                  SND (SF)
+                </Text>
               </View>
 
               {/* Transit Path Line */}
-              <View style={styles.mapPathLine} />
+              <View className="absolute top-[32%] left-[30%] w-[42%] h-[38px] border-l-[1.5px] border-b-[1.5px] border-dashed border-primary" />
 
               {/* Driver Courier Pin */}
-              <View style={[styles.mapPin, { top: '42%', left: '52%', borderColor: '#CCFF00' }]}>
-                <View style={[styles.mapPinInner, { backgroundColor: theme.primary }]} />
-                <Text style={[styles.mapPinLabel, { color: theme.primary }]}>COURIER</Text>
+              <View
+                className="absolute flex-row items-center gap-1 border border-[#71717A] bg-background rounded px-1 py-0.5"
+                style={{ top: "42%", left: "52%", borderColor: "#CCFF00" }}
+              >
+                <View
+                  className="w-1.5 h-1.5 rounded-full bg-[#71717A]"
+                  style={{ backgroundColor: theme.primary }}
+                />
+                <Text
+                  className="text-[9px] font-extrabold text-muted"
+                  style={{ color: theme.primary }}
+                >
+                  COURIER
+                </Text>
               </View>
 
               {/* Recipient Node */}
-              <View style={[styles.mapPin, { top: '20%', left: '75%', borderColor: '#60A5FA' }]}>
-                <View style={[styles.mapPinInner, { backgroundColor: '#60A5FA' }]} />
-                <Text style={[styles.mapPinLabel, { color: '#60A5FA' }]}>REC (SJ)</Text>
+              <View
+                className="absolute flex-row items-center gap-1 border border-[#71717A] bg-background rounded px-1 py-0.5"
+                style={{ top: "20%", left: "75%", borderColor: "#60A5FA" }}
+              >
+                <View
+                  className="w-1.5 h-1.5 rounded-full bg-[#71717A]"
+                  style={{ backgroundColor: "#60A5FA" }}
+                />
+                <Text
+                  className="text-[9px] font-extrabold text-muted"
+                  style={{ color: "#60A5FA" }}
+                >
+                  REC (SJ)
+                </Text>
               </View>
             </View>
-            <Text style={styles.mapCaption}>
+            <Text className="text-[10px] text-muted text-center">
               Coordinates: 37.7749° N, 122.4194° W — Terminal status nominal.
             </Text>
           </View>
 
           {/* Active Shipments Carousel/List */}
-          <Text style={styles.sectionTitle}>ACTIVE CONSIGNMENTS</Text>
+          <Text className="text-xs font-black text-foreground tracking-[1.5px] mt-2">
+            ACTIVE CONSIGNMENTS
+          </Text>
           {activeCustomerShipments.length > 0 ? (
             activeCustomerShipments.slice(0, 2).map((item) => (
               <Pressable
                 key={item.id}
-                style={styles.shipmentCard}
+                className="bg-card border border-border rounded-lg p-4 gap-3"
                 onPress={() => router.push(`/views/shipment/${item.id}` as any)}
               >
-                <View style={styles.shipmentHeader}>
-                  <Text style={[styles.shipmentId, styles.monoText]}>{item.id}</Text>
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-sm font-black text-foreground font-mono tabular-nums">
+                    {item.id}
+                  </Text>
                   <View
-                    style={[
-                      styles.statusBadge,
-                      item.status === 'pending' && styles.statusPending,
-                      item.status === 'picked_up' && styles.statusPicked,
-                      item.status === 'in_transit' && styles.statusTransit,
-                      item.status === 'delivered' && styles.statusDelivered,
-                    ]}
+                    className={`px-2 py-1 rounded ${
+                      item.status === "pending"
+                        ? "bg-[#71717A1F]"
+                        : item.status === "picked_up"
+                          ? "bg-[#3B82F61F]"
+                          : item.status === "in_transit"
+                            ? "bg-[#F59E0B1F]"
+                            : "bg-[#10B9811F]"
+                    }`}
                   >
                     <Text
-                      style={[
-                        styles.statusBadgeText,
-                        item.status === 'pending' && styles.statusTextPending,
-                        item.status === 'picked_up' && styles.statusTextPicked,
-                        item.status === 'in_transit' && styles.statusTextTransit,
-                        item.status === 'delivered' && styles.statusTextDelivered,
-                      ]}
+                      className={`text-[9px] font-black tracking-wider ${
+                        item.status === "pending"
+                          ? "text-muted"
+                          : item.status === "picked_up"
+                            ? "text-[#60A5FA]"
+                            : item.status === "in_transit"
+                              ? "text-warning"
+                              : "text-success"
+                      }`}
                     >
-                      {item.status.toUpperCase().replace('_', ' ')}
+                      {item.status.toUpperCase().replace("_", " ")}
                     </Text>
                   </View>
                 </View>
 
                 {item.delayReason && (
-                  <View style={styles.delayBanner}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EAB308" />
-                    <Text style={styles.delayText}>DELAY REPORTED: {item.delayReason}</Text>
+                  <View className="flex-row items-center gap-1.5 bg-[#EF44441F] border border-[#EF444433] py-2 px-2.5 rounded">
+                    <IconSymbol
+                      name="exclamationmark.triangle.fill"
+                      size={14}
+                      color="#EAB308"
+                    />
+                    <Text className="text-danger text-[10px] font-extrabold tracking-wider">
+                      DELAY REPORTED: {item.delayReason}
+                    </Text>
                   </View>
                 )}
 
-                <View style={styles.shipmentDetails}>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>DESTINATION</Text>
-                    <Text style={styles.detailValue} numberOfLines={1}>
+                <View className="gap-1.5">
+                  <View className="flex-row justify-between">
+                    <Text className="text-[9px] font-bold text-muted">
+                      DESTINATION
+                    </Text>
+                    <Text
+                      className="text-[11px] font-extrabold text-foreground max-w-[70%]"
+                      numberOfLines={1}
+                    >
                       {item.recipientAddress}
                     </Text>
                   </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>CARGO TYPE</Text>
-                    <Text style={styles.detailValue}>
+                  <View className="flex-row justify-between">
+                    <Text className="text-[9px] font-bold text-muted">
+                      CARGO TYPE
+                    </Text>
+                    <Text className="text-[11px] font-extrabold text-foreground max-w-[70%]">
                       {item.packageCategory} ({item.weight} kg)
                     </Text>
                   </View>
@@ -216,158 +303,234 @@ export default function HomeScreen() {
               </Pressable>
             ))
           ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyText}>No active cargo routes currently operating.</Text>
+            <View className="bg-[#1E1E20] border border-[#2D2D30] rounded-lg p-6 items-center justify-center">
+              <Text className="text-muted text-xs font-semibold text-center">
+                No active cargo routes currently operating.
+              </Text>
             </View>
           )}
         </View>
       )}
 
       {/* Driver/Rider Mode View */}
-      {activeRole === 'rider' && (
-        <View style={styles.roleContainer}>
+      {activeRole === "rider" && (
+        <View className="gap-4">
           {/* Duty Control Card */}
-          <View style={styles.card}>
-            <View style={styles.dutyRow}>
+          <View className="bg-card border border-border rounded-lg p-4 gap-3">
+            <View className="flex-row items-center justify-between">
               <View>
-                <Text style={styles.cardHeader}>COURIER DUTY STATUS</Text>
-                <Text style={[styles.dutyStatusText, { color: riderStats.isOnline ? '#10B981' : '#71717A' }]}>
-                  {riderStats.isOnline ? 'ONLINE — ACCEPTING DISPATCHES' : 'OFFLINE — SHIFT CLOSED'}
+                <Text className="text-[11px] font-black text-primary tracking-[1.5px]">
+                  COURIER DUTY STATUS
+                </Text>
+                <Text
+                  className="text-xs font-extrabold mt-1"
+                  style={{ color: riderStats.isOnline ? "#10B981" : "#71717A" }}
+                >
+                  {riderStats.isOnline
+                    ? "ONLINE — ACCEPTING DISPATCHES"
+                    : "OFFLINE — SHIFT CLOSED"}
                 </Text>
               </View>
               <Pressable
-                style={[
-                  styles.toggleSwitch,
-                  riderStats.isOnline ? styles.toggleSwitchOn : styles.toggleSwitchOff,
-                ]}
+                className={`w-[54px] h-[30px] rounded-full p-[3px] justify-center border ${riderStats.isOnline ? "bg-primary border-primary" : "bg-background border-border"}`}
                 onPress={toggleOnline}
               >
                 <View
-                  style={[
-                    styles.toggleKnob,
-                    riderStats.isOnline ? styles.toggleKnobOn : styles.toggleKnobOff,
-                  ]}
+                  className={`w-6 h-6 rounded-full ${riderStats.isOnline ? "bg-background self-end" : "bg-[#71717A] self-start"}`}
                 />
               </Pressable>
             </View>
           </View>
 
           {/* Earnings / Stats Widgets */}
-          <View style={styles.statsGrid}>
-            <View style={styles.statBox}>
-              <Text style={styles.statBoxLabel}>SHIFT EARNINGS</Text>
-              <Text style={[styles.statBoxValue, styles.monoText, { color: theme.primary }]}>
+          <View className="flex-row gap-2">
+            <View className="flex-1 bg-card border border-border rounded-lg p-3 gap-1">
+              <Text className="text-[9px] font-extrabold text-muted">
+                SHIFT EARNINGS
+              </Text>
+              <Text className="text-xl font-black text-primary font-mono tabular-nums">
                 ${riderStats.earnings.toFixed(2)}
               </Text>
             </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statBoxLabel}>TRIPS</Text>
-              <Text style={[styles.statBoxValue, styles.monoText]}>{riderStats.completedTasks}</Text>
+            <View className="flex-1 bg-card border border-border rounded-lg p-3 gap-1">
+              <Text className="text-[9px] font-extrabold text-muted">
+                TRIPS
+              </Text>
+              <Text className="text-xl font-black text-foreground font-mono tabular-nums">
+                {riderStats.completedTasks}
+              </Text>
             </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statBoxLabel}>DUTY HOURS</Text>
-              <Text style={[styles.statBoxValue, styles.monoText]}>{riderStats.hoursOnline}h</Text>
+            <View className="flex-1 bg-card border border-border rounded-lg p-3 gap-1">
+              <Text className="text-[9px] font-extrabold text-muted">
+                DUTY HOURS
+              </Text>
+              <Text className="text-xl font-black text-foreground font-mono tabular-nums">
+                {riderStats.hoursOnline}h
+              </Text>
             </View>
           </View>
 
           {/* Active Rider Task */}
-          <Text style={styles.sectionTitle}>ACTIVE LOGISTICS ASSIGNMENT</Text>
+          <Text className="text-xs font-black text-foreground tracking-[1.5px] mt-2">
+            ACTIVE LOGISTICS ASSIGNMENT
+          </Text>
           {activeRiderShipment ? (
-            <View style={styles.riderActiveCard}>
-              <View style={styles.riderActiveHeader}>
+            <View className="bg-card border border-border rounded-lg p-4 gap-3">
+              <View className="flex-row justify-between items-center">
                 <View>
-                  <Text style={styles.riderActiveSub}>ACTIVE ROUTE</Text>
-                  <Text style={[styles.riderActiveId, styles.monoText]}>{activeRiderShipment.id}</Text>
+                  <Text className="text-[9px] font-extrabold text-primary tracking-wider">
+                    ACTIVE ROUTE
+                  </Text>
+                  <Text className="text-lg font-black text-foreground font-mono tabular-nums">
+                    {activeRiderShipment.id}
+                  </Text>
                 </View>
                 <Pressable
-                  style={styles.detailsIconBtn}
-                  onPress={() => router.push(`/views/shipment/${activeRiderShipment.id}` as any)}
+                  className="p-1.5 bg-background rounded border border-border"
+                  onPress={() =>
+                    router.push(
+                      `/views/shipment/${activeRiderShipment.id}` as any,
+                    )
+                  }
                 >
-                  <IconSymbol name="info.circle.fill" size={20} color="#CCFF00" />
+                  <IconSymbol
+                    name="info.circle.fill"
+                    size={20}
+                    color="#CCFF00"
+                  />
                 </Pressable>
               </View>
 
               {activeRiderShipment.delayReason && (
-                <View style={[styles.delayBanner, { backgroundColor: '#EAB3081A', borderColor: '#EAB30833' }]}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EAB308" />
-                  <Text style={[styles.delayText, { color: '#EAB308' }]}>
+                <View
+                  className="flex-row items-center gap-1.5 bg-[#EF44441F] border border-[#EF444433] py-2 px-2.5 rounded"
+                  style={{
+                    backgroundColor: "#EAB3081A",
+                    borderColor: "#EAB30833",
+                  }}
+                >
+                  <IconSymbol
+                    name="exclamationmark.triangle.fill"
+                    size={14}
+                    color="#EAB308"
+                  />
+                  <Text
+                    className="text-danger text-[10px] font-extrabold tracking-wider"
+                    style={{ color: "#EAB308" }}
+                  >
                     ACTIVE DELAY: {activeRiderShipment.delayReason}
                   </Text>
                 </View>
               )}
 
-              <View style={styles.riderAddresses}>
-                <View style={styles.addressLine}>
-                  <View style={[styles.addressIndicator, { backgroundColor: theme.primary }]} />
-                  <View style={styles.addressDetails}>
-                    <Text style={styles.addressRoleLabel}>ORIGIN PICKUP</Text>
-                    <Text style={styles.addressText}>{activeRiderShipment.senderAddress}</Text>
+              <View className="gap-3 bg-background p-3 rounded-md border border-border">
+                <View className="flex-row gap-2.5">
+                  <View
+                    className="w-2 h-2 rounded-full mt-1"
+                    style={{ backgroundColor: theme.primary }}
+                  />
+                  <View className="flex-1 gap-0.5">
+                    <Text className="text-[8px] font-extrabold text-muted">
+                      ORIGIN PICKUP
+                    </Text>
+                    <Text className="text-xs text-foreground font-semibold">
+                      {activeRiderShipment.senderAddress}
+                    </Text>
                   </View>
                 </View>
-                <View style={styles.addressLine}>
-                  <View style={[styles.addressIndicator, { backgroundColor: '#60A5FA' }]} />
-                  <View style={styles.addressDetails}>
-                    <Text style={styles.addressRoleLabel}>DESTINATION DROP</Text>
-                    <Text style={styles.addressText}>{activeRiderShipment.recipientAddress}</Text>
+                <View className="flex-row gap-2.5">
+                  <View
+                    className="w-2 h-2 rounded-full mt-1"
+                    style={{ backgroundColor: "#60A5FA" }}
+                  />
+                  <View className="flex-1 gap-0.5">
+                    <Text className="text-[8px] font-extrabold text-muted">
+                      DESTINATION DROP
+                    </Text>
+                    <Text className="text-xs text-foreground font-semibold">
+                      {activeRiderShipment.recipientAddress}
+                    </Text>
                   </View>
                 </View>
               </View>
 
-              <View style={styles.dividerLine} />
+              <View className="h-px bg-border" />
 
-              <View style={styles.riderTaskCargoRow}>
+              <View className="flex-row justify-between">
                 <View>
-                  <Text style={styles.cargoLabel}>CARGO CATEGORY</Text>
-                  <Text style={styles.cargoValue}>{activeRiderShipment.packageCategory}</Text>
+                  <Text className="text-[9px] font-bold text-muted">
+                    CARGO CATEGORY
+                  </Text>
+                  <Text className="text-xs font-extrabold text-foreground mt-0.5">
+                    {activeRiderShipment.packageCategory}
+                  </Text>
                 </View>
                 <View>
-                  <Text style={styles.cargoLabel}>TALLY WEIGHT</Text>
-                  <Text style={[styles.cargoValue, styles.monoText]}>{activeRiderShipment.weight} KG</Text>
+                  <Text className="text-[9px] font-bold text-muted">
+                    TALLY WEIGHT
+                  </Text>
+                  <Text className="text-xs font-extrabold text-foreground mt-0.5 font-mono tabular-nums">
+                    {activeRiderShipment.weight} KG
+                  </Text>
                 </View>
               </View>
 
               {/* Context Actions */}
-              {activeRiderShipment.status === 'picked_up' ? (
+              {activeRiderShipment.status === "picked_up" ? (
                 <Pressable
-                  style={styles.actionCtaButton}
+                  className="bg-primary py-3 rounded-md flex-row items-center justify-center gap-1.5"
                   onPress={() =>
                     updateShipmentStatus(
                       activeRiderShipment.id,
-                      'in_transit',
-                      'Departed distribution depot en route.'
+                      "in_transit",
+                      "Departed distribution depot en route.",
                     )
                   }
                 >
                   <IconSymbol name="car.fill" size={18} color="#18181B" />
-                  <Text style={styles.actionCtaButtonText}>DEPART ON ROUTE (IN TRANSIT)</Text>
+                  <Text className="text-[#18181B] font-black text-xs">
+                    DEPART ON ROUTE (IN TRANSIT)
+                  </Text>
                 </Pressable>
               ) : (
                 <Pressable
-                  style={[styles.actionCtaButton, { backgroundColor: '#10B981' }]}
+                  className="bg-primary py-3 rounded-md flex-row items-center justify-center gap-1.5"
+                  style={{ backgroundColor: "#10B981" }}
                   onPress={() =>
                     updateShipmentStatus(
                       activeRiderShipment.id,
-                      'delivered',
-                      'Package handed over and signature confirmed.'
+                      "delivered",
+                      "Package handed over and signature confirmed.",
                     )
                   }
                 >
-                  <IconSymbol name="checkmark.circle.fill" size={18} color="#18181B" />
-                  <Text style={styles.actionCtaButtonText}>CONFIRM CARGO HANDOVER</Text>
+                  <IconSymbol
+                    name="checkmark.circle.fill"
+                    size={18}
+                    color="#18181B"
+                  />
+                  <Text className="text-[#18181B] font-black text-xs">
+                    CONFIRM CARGO HANDOVER
+                  </Text>
                 </Pressable>
               )}
             </View>
           ) : (
-            <View style={styles.emptyRiderCard}>
-              <Text style={styles.emptyRiderTitle}>NO ACTIVE TRANSIT ROUTE</Text>
-              <Text style={styles.emptyRiderSub}>
-                Set duty to ONLINE and accept cargo routes from the Logistics Board.
+            <View className="bg-[#1E1E20] border border-[#2D2D30] rounded-lg p-6 items-center justify-center gap-2">
+              <Text className="text-foreground text-sm font-black tracking-wider">
+                NO ACTIVE TRANSIT ROUTE
+              </Text>
+              <Text className="text-muted text-[11px] font-semibold text-center leading-4 px-3">
+                Set duty to ONLINE and accept cargo routes from the Logistics
+                Board.
               </Text>
               <Pressable
-                style={styles.gotoBoardBtn}
-                onPress={() => router.push('/shipments' as any)}
+                className="bg-card border border-border py-2 px-4 rounded-md mt-2"
+                onPress={() => router.push("/shipments" as any)}
               >
-                <Text style={styles.gotoBoardBtnText}>VIEW LOGISTICS BOARD</Text>
+                <Text className="text-primary text-[11px] font-extrabold">
+                  VIEW LOGISTICS BOARD
+                </Text>
               </Pressable>
             </View>
           )}
@@ -376,519 +539,3 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
-
-const createStyles = (theme: any) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
-  contentContainer: {
-    padding: 16,
-    gap: 16,
-    paddingTop: Platform.OS === 'ios' ? 64 : 16,
-    paddingBottom: 40,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: theme.text,
-    letterSpacing: 1,
-  },
-  headerSubtitle: {
-    fontSize: 10,
-    color: theme.muted,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-  },
-  badge: {
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  badgeText: {
-    color: theme.primary,
-    fontSize: 11,
-    fontWeight: '900',
-  },
-  roleContainer: {
-    gap: 16,
-  },
-  card: {
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    padding: 16,
-    gap: 12,
-  },
-  cardHeader: {
-    fontSize: 11,
-    fontWeight: '900',
-    color: theme.primary,
-    letterSpacing: 1.5,
-  },
-  cardHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  searchRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    backgroundColor: theme.background,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 6,
-    borderCurve: 'continuous',
-    color: theme.text,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  searchButton: {
-    backgroundColor: '#FAFAFA',
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 6,
-    borderCurve: 'continuous',
-  },
-  searchButtonText: {
-    color: '#18181B',
-    fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  statItem: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    padding: 16,
-    gap: 6,
-  },
-  statLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: theme.muted,
-    letterSpacing: 0.5,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: theme.text,
-  },
-  bookCtaButton: {
-    backgroundColor: theme.primary,
-    paddingVertical: 14,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  bookCtaText: {
-    color: '#18181B',
-    fontWeight: '900',
-    fontSize: 13,
-    letterSpacing: 0.5,
-  },
-  liveIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  pulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#EF4444',
-  },
-  liveText: {
-    color: '#EF4444',
-    fontSize: 9,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  mapMock: {
-    height: 180,
-    backgroundColor: theme.background,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 6,
-    borderCurve: 'continuous',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  mapGridLineH: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 0.5,
-    backgroundColor: '#3F3F4640',
-  },
-  mapGridLineV: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: 0.5,
-    backgroundColor: '#3F3F4640',
-  },
-  mapPin: {
-    position: 'absolute',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    borderWidth: 1,
-    borderColor: '#71717A',
-    backgroundColor: theme.background,
-    borderRadius: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-  },
-  mapPinInner: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#71717A',
-  },
-  mapPinLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: theme.muted,
-  },
-  mapPathLine: {
-    position: 'absolute',
-    top: '32%',
-    left: '30%',
-    width: '42%',
-    height: 38,
-    borderLeftWidth: 1.5,
-    borderBottomWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: '#CCFF00',
-  },
-  mapCaption: {
-    fontSize: 10,
-    color: theme.muted,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '900',
-    color: theme.text,
-    letterSpacing: 1.5,
-    marginTop: 8,
-  },
-  shipmentCard: {
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    padding: 16,
-    gap: 12,
-  },
-  shipmentHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  shipmentId: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: theme.text,
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  statusPending: { backgroundColor: '#71717A1F' },
-  statusPicked: { backgroundColor: '#3B82F61F' },
-  statusTransit: { backgroundColor: '#F59E0B1F' },
-  statusDelivered: { backgroundColor: '#10B9811F' },
-  statusBadgeText: {
-    fontSize: 9,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  statusTextPending: { color: theme.muted },
-  statusTextPicked: { color: '#60A5FA' },
-  statusTextTransit: { color: '#FBBF24' },
-  statusTextDelivered: { color: theme.success },
-  delayBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#EF44441F',
-    borderWidth: 1,
-    borderColor: '#EF444433',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-  },
-  delayText: {
-    color: '#EF4444',
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  shipmentDetails: {
-    gap: 6,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  detailLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: theme.muted,
-  },
-  detailValue: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: theme.text,
-    maxWidth: '70%',
-  },
-  emptyCard: {
-    backgroundColor: '#1E1E20',
-    borderWidth: 1,
-    borderColor: '#2D2D30',
-    borderRadius: 8,
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    color: theme.muted,
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  dutyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  dutyStatusText: {
-    fontSize: 12,
-    fontWeight: '800',
-    marginTop: 4,
-  },
-  toggleSwitch: {
-    width: 54,
-    height: 30,
-    borderRadius: 15,
-    padding: 3,
-    justifyContent: 'center',
-  },
-  toggleSwitchOn: {
-    backgroundColor: theme.primary,
-  },
-  toggleSwitchOff: {
-    backgroundColor: theme.background,
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  toggleKnob: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-  },
-  toggleKnobOn: {
-    backgroundColor: theme.background,
-    alignSelf: 'flex-end',
-  },
-  toggleKnobOff: {
-    backgroundColor: '#71717A',
-    alignSelf: 'flex-start',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  statBox: {
-    flex: 1,
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    padding: 12,
-    gap: 4,
-  },
-  statBoxLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: theme.muted,
-  },
-  statBoxValue: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: theme.text,
-  },
-  riderActiveCard: {
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-    padding: 16,
-    gap: 12,
-  },
-  riderActiveHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  riderActiveSub: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: theme.primary,
-    letterSpacing: 0.5,
-  },
-  riderActiveId: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: theme.text,
-  },
-  detailsIconBtn: {
-    padding: 6,
-    backgroundColor: theme.background,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  riderAddresses: {
-    gap: 12,
-    backgroundColor: theme.background,
-    padding: 12,
-    borderRadius: 6,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  addressLine: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  addressIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 4,
-  },
-  addressDetails: {
-    flex: 1,
-    gap: 2,
-  },
-  addressRoleLabel: {
-    fontSize: 8,
-    fontWeight: '800',
-    color: theme.muted,
-  },
-  addressText: {
-    fontSize: 12,
-    color: theme.text,
-    fontWeight: '600',
-  },
-  dividerLine: {
-    height: 1,
-    backgroundColor: theme.border,
-  },
-  riderTaskCargoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  cargoLabel: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: theme.muted,
-  },
-  cargoValue: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: theme.text,
-    marginTop: 2,
-  },
-  actionCtaButton: {
-    backgroundColor: theme.primary,
-    paddingVertical: 12,
-    borderRadius: 6,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-  },
-  actionCtaButtonText: {
-    color: '#18181B',
-    fontWeight: '900',
-    fontSize: 12,
-  },
-  emptyRiderCard: {
-    backgroundColor: '#1E1E20',
-    borderWidth: 1,
-    borderColor: '#2D2D30',
-    borderRadius: 8,
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  emptyRiderTitle: {
-    color: theme.text,
-    fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  emptyRiderSub: {
-    color: theme.muted,
-    fontSize: 11,
-    fontWeight: '600',
-    textAlign: 'center',
-    lineHeight: 16,
-    paddingHorizontal: 12,
-  },
-  gotoBoardBtn: {
-    backgroundColor: theme.card,
-    borderWidth: 1,
-    borderColor: theme.border,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-    marginTop: 8,
-  },
-  gotoBoardBtnText: {
-    color: theme.primary,
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  monoText: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
-    fontVariant: ['tabular-nums'],
-  },
-});

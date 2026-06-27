@@ -71,30 +71,27 @@ export default function BookShipmentScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.keyboardContainer}
+      className="flex-1"
     >
       <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
+        className="flex-1"
+        contentContainerClassName="p-4 gap-4 pb-12"
         keyboardShouldPersistTaps="handled"
       >
-        <View style={[styles.modalHeader, { borderBottomColor: theme.border }]}>
-          <Text style={[styles.modalTitle, { color: theme.text }]}>BOOK LOGISTICS ROUTE</Text>
-          <Pressable onPress={() => router.back()} style={[styles.closeButton, { backgroundColor: theme.card, borderColor: theme.border }]}>
-            <Text style={[styles.closeText, { color: theme.muted }]}>CANCEL</Text>
+        <View className="flex-row items-center justify-between py-2 border-b border-border border-b-border">
+          <Text className="text-base font-black tracking-widest text-foreground text-foreground">BOOK LOGISTICS ROUTE</Text>
+          <Pressable onPress={() => router.back()} className="py-1.5 px-3 rounded border bg-card border-border bg-card border-border">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">CANCEL</Text>
           </Pressable>
         </View>
 
         {/* Sender Section */}
-        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <Text style={[styles.sectionHeader, { color: theme.primary }]}>SENDER ORIGIN</Text>
-          <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: theme.muted }]}>SENDER NAME</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">SENDER ORIGIN</Text>
+          <View className="gap-1.5">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">SENDER NAME</Text>
             <TextInput
-              style={[
-                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
-                activeInput === "senderName" && [styles.textInputActive, { borderColor: theme.primary }],
-              ]}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderName" ? 'border-primary' : ''}`}
               value={senderName}
               onChangeText={setSenderName}
               placeholder="Full Name / Company"
@@ -104,13 +101,10 @@ export default function BookShipmentScreen() {
             />
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: theme.muted }]}>ORIGIN ADDRESS</Text>
+          <View className="gap-1.5">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">ORIGIN ADDRESS</Text>
             <TextInput
-              style={[
-                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
-                activeInput === "senderAddress" && [styles.textInputActive, { borderColor: theme.primary }],
-              ]}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "senderAddress" ? 'border-primary' : ''}`}
               value={senderAddress}
               onChangeText={setSenderAddress}
               placeholder="Street, City, Building Number"
@@ -122,15 +116,12 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Recipient Section */}
-        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <Text style={[styles.sectionHeader, { color: theme.primary }]}>RECIPIENT DESTINATION</Text>
-          <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: theme.muted }]}>RECIPIENT NAME</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">RECIPIENT DESTINATION</Text>
+          <View className="gap-1.5">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">RECIPIENT NAME</Text>
             <TextInput
-              style={[
-                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
-                activeInput === "recipientName" && [styles.textInputActive, { borderColor: theme.primary }],
-              ]}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientName" ? 'border-primary' : ''}`}
               value={recipientName}
               onChangeText={setRecipientName}
               placeholder="Full Name / Clinic / Facility"
@@ -140,13 +131,10 @@ export default function BookShipmentScreen() {
             />
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: theme.muted }]}>DESTINATION ADDRESS</Text>
+          <View className="gap-1.5">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">DESTINATION ADDRESS</Text>
             <TextInput
-              style={[
-                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
-                activeInput === "recipientAddress" && [styles.textInputActive, { borderColor: theme.primary }],
-              ]}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground ${activeInput === "recipientAddress" ? 'border-primary' : ''}`}
               value={recipientAddress}
               onChangeText={setRecipientAddress}
               placeholder="Street, City, Suite / Room"
@@ -158,25 +146,19 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Package Specifications */}
-        <View style={[styles.sectionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <Text style={[styles.sectionHeader, { color: theme.primary }]}>CARGO SPECIFICATIONS</Text>
+        <View className="rounded-lg border p-4 gap-3.5 bg-card border-border bg-card border-border">
+          <Text className="text-xs font-black tracking-widest mb-1 text-primary text-primary">CARGO SPECIFICATIONS</Text>
 
-          <Text style={[styles.inputLabel, { color: theme.muted }]}>CATEGORY</Text>
-          <View style={styles.categoriesGrid}>
+          <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">CATEGORY</Text>
+          <View className="flex-row flex-wrap gap-2 mb-1.5">
             {categories.map((cat) => (
               <Pressable
                 key={cat}
-                style={[
-                  styles.categoryPill, { backgroundColor: theme.background, borderColor: theme.border },
-                  packageCategory === cat && [styles.categoryPillActive, { borderColor: theme.primary, backgroundColor: theme.primary + '1A' }],
-                ]}
+                className={`border rounded-md py-2 px-3 bg-background border-border ${packageCategory === cat ? 'border-primary bg-primary/10' : ''}`}
                 onPress={() => setPackageCategory(cat)}
               >
                 <Text
-                  style={[
-                    styles.categoryText, { color: theme.muted },
-                    packageCategory === cat && [styles.categoryTextActive, { color: theme.primary }],
-                  ]}
+                  className={`text-[11px] font-bold text-muted ${packageCategory === cat ? 'text-primary' : ''}`}
                 >
                   {cat.toUpperCase()}
                 </Text>
@@ -184,37 +166,33 @@ export default function BookShipmentScreen() {
             ))}
           </View>
 
-          <View style={[styles.weightControlGroup, { backgroundColor: theme.background, borderColor: theme.border }]}>
+          <View className="flex-row items-center border rounded-md p-3 bg-background border-border bg-background border-border">
             <View style={{ flex: 1 }}>
-              <Text style={[styles.inputLabel, { color: theme.muted }]}>WEIGHT (KG)</Text>
-              <Text style={[styles.weightValueText, styles.monoText, { color: theme.text }]}>
+              <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">WEIGHT (KG)</Text>
+              <Text className="text-lg font-black mt-1 text-foreground font-mono tabular-nums text-foreground">
                 {weight.toFixed(1)} KG
               </Text>
             </View>
-            <View style={styles.weightButtons}>
+            <View className="flex-row gap-2">
               <Pressable
-                style={[styles.weightAdjustButton, { backgroundColor: theme.card, borderColor: theme.border }]}
+                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border bg-card border-border"
                 onPress={() => adjustWeight(-0.5)}
               >
-                <Text style={[styles.weightAdjustText, { color: theme.text }]}>-</Text>
+                <Text className="text-[22px] font-bold text-foreground text-foreground">-</Text>
               </Pressable>
               <Pressable
-                style={[styles.weightAdjustButton, { backgroundColor: theme.card, borderColor: theme.border }]}
+                className="w-11 h-11 border rounded-md items-center justify-center bg-card border-border bg-card border-border"
                 onPress={() => adjustWeight(0.5)}
               >
-                <Text style={[styles.weightAdjustText, { color: theme.text }]}>+</Text>
+                <Text className="text-[22px] font-bold text-foreground text-foreground">+</Text>
               </Pressable>
             </View>
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: theme.muted }]}>SPECIAL INSTRUCTIONS</Text>
+          <View className="gap-1.5">
+            <Text className="text-[10px] font-extrabold tracking-wider text-muted text-muted">SPECIAL INSTRUCTIONS</Text>
             <TextInput
-              style={[
-                styles.textInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text },
-                styles.textAreaInput,
-                activeInput === "notes" && [styles.textInputActive, { borderColor: theme.primary }],
-              ]}
+              className={`border rounded-md px-3 py-2.5 text-sm bg-background border-border text-foreground h-[70px] text-top ${activeInput === "notes" ? 'border-primary' : ''}`}
               value={notes}
               onChangeText={setNotes}
               placeholder="Add loading notes, gate codes, or handling warnings"
@@ -228,188 +206,25 @@ export default function BookShipmentScreen() {
         </View>
 
         {/* Pricing Summary Card */}
-        <View style={[styles.priceCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <View className="flex-row items-center justify-between border rounded-lg p-4 bg-card border-border bg-card border-border">
           <View>
-            <Text style={[styles.priceLabel, { color: theme.text }]}>ESTIMATED ROUTE TARIFF</Text>
-            <Text style={[styles.priceSubtext, { color: theme.muted }]}>
+            <Text className="text-xs font-extrabold tracking-wider text-foreground text-foreground">ESTIMATED ROUTE TARIFF</Text>
+            <Text className="text-[10px] mt-0.5 text-muted text-muted">
               Calculated on Category & Cargo Weight
             </Text>
           </View>
-          <Text style={[styles.priceValueText, styles.monoText, { color: theme.primary }]}>
+          <Text className="text-[22px] font-black text-primary font-mono tabular-nums text-primary">
             ${estimatedPrice.toFixed(2)}
           </Text>
         </View>
 
         {/* Action Button */}
-        <Pressable style={[styles.submitButton, { backgroundColor: theme.primary }]} onPress={handleBook}>
+        <Pressable className="py-3.5 rounded-lg flex-row items-center justify-center gap-2 mt-2 bg-primary bg-primary" onPress={handleBook}>
           <IconSymbol name="plus.circle.fill" size={20} color={theme.primaryText} />
-          <Text style={[styles.submitButtonText, { color: theme.primaryText }]}>DISPATCH LOGISTICS ROUTE</Text>
+          <Text className="font-black text-sm tracking-wider text-[#18181B] text-[#18181B]">DISPATCH LOGISTICS ROUTE</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
-  keyboardContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16,
-    gap: 16,
-    paddingBottom: 48,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: "900",
-    letterSpacing: 1,
-  },
-  closeButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-  closeText: {
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  sectionCard: {
-    borderRadius: 8,
-    borderCurve: "continuous",
-    borderWidth: 1,
-    padding: 16,
-    gap: 14,
-  },
-  sectionHeader: {
-    fontSize: 12,
-    fontWeight: "900",
-    letterSpacing: 1,
-    marginBottom: 4,
-  },
-  inputGroup: {
-    gap: 6,
-  },
-  inputLabel: {
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-  },
-  textInputActive: {
-  },
-  textAreaInput: {
-    height: 70,
-    textAlignVertical: "top",
-  },
-  categoriesGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 6,
-  },
-  categoryPill: {
-    borderWidth: 1,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  categoryPillActive: {
-  },
-  categoryText: {
-    fontSize: 11,
-    fontWeight: "700",
-  },
-  categoryTextActive: {
-  },
-  weightControlGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    padding: 12,
-  },
-  weightValueText: {
-    fontSize: 18,
-    fontWeight: "900",
-    marginTop: 4,
-  },
-  weightButtons: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  weightAdjustButton: {
-    width: 44,
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  weightAdjustText: {
-    fontSize: 22,
-    fontWeight: "700",
-  },
-  priceCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderRadius: 8,
-    borderCurve: "continuous",
-    padding: 16,
-  },
-  priceLabel: {
-    fontSize: 12,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  priceSubtext: {
-    fontSize: 10,
-    marginTop: 2,
-  },
-  priceValueText: {
-    fontSize: 22,
-    fontWeight: "900",
-  },
-  monoText: {
-    fontFamily: Platform.OS === "ios" ? "Courier New" : "monospace",
-    fontVariant: ["tabular-nums"],
-  },
-  submitButton: {
-    paddingVertical: 14,
-    borderRadius: 8,
-    borderCurve: "continuous",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 8,
-  },
-  submitButtonText: {
-    fontWeight: "900",
-    fontSize: 14,
-    letterSpacing: 0.5,
-  },
-});

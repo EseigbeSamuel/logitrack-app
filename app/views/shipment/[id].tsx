@@ -1,16 +1,9 @@
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+import { ShipmentStatus, useLogiTrack } from "@/store/logitrack-store";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { ShipmentStatus, useLogiTrack } from "@/store/logitrack-store";
-import { useThemeColors } from '@/hooks/use-theme-colors';
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 export default function ShipmentDetailScreen() {
   const router = useRouter();
@@ -30,19 +23,26 @@ export default function ShipmentDetailScreen() {
 
   if (!shipment) {
     return (
-      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+      <View className="flex-1 p-6 items-center justify-center gap-4 bg-background">
         <IconSymbol
           name="exclamationmark.triangle.fill"
           size={32}
           color={theme.danger}
         />
-        <Text style={[styles.errorTitle, { color: theme.danger }]}>CONSIGNMENT UNREGISTERED</Text>
-        <Text style={[styles.errorText, { color: theme.muted }]}>
+        <Text className="text-base font-black tracking-widest text-center text-danger">
+          CONSIGNMENT UNREGISTERED
+        </Text>
+        <Text className="text-xs font-semibold text-center leading-snug px-6 text-muted">
           The tracking number ID &apos;{id}&apos; was not found in active
           database registries.
         </Text>
-        <Pressable style={[styles.backBtn, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={() => router.back()}>
-          <Text style={[styles.backBtnText, { color: theme.primary }]}>RETURN TO DASHBOARD</Text>
+        <Pressable
+          className="border py-3 px-5 rounded-md bg-card border-border"
+          onPress={() => router.back()}
+        >
+          <Text className="text-xs font-extrabold text-primary">
+            RETURN TO DASHBOARD
+          </Text>
         </Pressable>
       </View>
     );
@@ -108,21 +108,23 @@ export default function ShipmentDetailScreen() {
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: theme.background }]}
-      contentContainerStyle={styles.contentContainer}
+      className="flex-1 bg-background"
+      contentContainerClassName="p-4 gap-4 pb-10"
       contentInsetAdjustmentBehavior="automatic"
     >
       {/* Alert delay warning banner */}
       {shipment.delayReason && (
-        <View style={[styles.alertBanner, { backgroundColor: theme.warningBg, borderColor: theme.warning }]}>
+        <View className="flex-row items-center gap-3 border py-3 px-3.5 rounded-lg border-warning bg-[#F59E0B1F]">
           <IconSymbol
             name="exclamationmark.triangle.fill"
             size={20}
             color={theme.warning}
           />
-          <View style={styles.alertTextWrapper}>
-            <Text style={[styles.alertTitle, { color: theme.warning }]}>ROUTE INTERRUPTED</Text>
-            <Text style={[styles.alertSubtitle, { color: theme.warning }]}>
+          <View className="flex-1 gap-0.5">
+            <Text className="text-xs font-black tracking-widest text-warning">
+              ROUTE INTERRUPTED
+            </Text>
+            <Text className="text-[11px] font-semibold text-warning">
               Rider reported: {shipment.delayReason.toUpperCase()}
             </Text>
           </View>
@@ -130,90 +132,90 @@ export default function ShipmentDetailScreen() {
       )}
 
       {/* Cargo Overview Card */}
-      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-        <View style={styles.cardHeaderRow}>
+      <View className="border rounded-lg p-4 gap-3 bg-card border-border">
+        <View className="flex-row justify-between items-start">
           <View>
-            <Text style={[styles.sectionHeader, { color: theme.muted }]}>CARGO MANIFEST</Text>
-            <Text style={[styles.manifestId, styles.monoText, { color: theme.text }]}>
+            <Text className="text-[10px] font-black tracking-[1.5px] text-muted">
+              CARGO MANIFEST
+            </Text>
+            <Text className="text-[22px] font-black mt-1 text-foreground font-mono tabular-nums">
               {shipment.id}
             </Text>
           </View>
           <View
-            style={[
-              styles.tagBadge, { backgroundColor: theme.mutedBg },
-              shipment.delayReason ? { backgroundColor: theme.dangerBg } : { backgroundColor: theme.successBg },
-            ]}
+            className={`px-2.5 py-1 rounded ${shipment.delayReason ? "bg-[#EF44441F]" : "bg-[#10B9811F]"}`}
           >
             <Text
-              style={[
-                styles.tagText, { color: theme.muted },
-                shipment.delayReason
-                  ? { color: theme.danger }
-                  : { color: theme.success },
-              ]}
+              className={`text-[9px] font-black tracking-wider ${shipment.delayReason ? "text-danger" : "text-success"}`}
             >
               {shipment.delayReason ? "EXCEPTION" : "NOMINAL"}
             </Text>
           </View>
         </View>
 
-        <View style={[styles.addressBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
-          <View style={styles.addressItem}>
-            <View
-              style={[styles.nodeIndicator, { backgroundColor: theme.primary }]}
-            />
+        <View className="p-3.5 rounded-md border gap-2.5 relative bg-background border-border">
+          <View className="flex-row gap-3">
+            <View className="w-2 h-2 rounded-full mt-1.5 bg-primary" />
             <View style={{ flex: 1 }}>
-              <Text style={[styles.addressRole, { color: theme.muted }]}>ORIGIN SHIPPED FROM</Text>
-              <Text style={[styles.addressNameText, { color: theme.text }]}>{shipment.senderName}</Text>
-              <Text style={[styles.addressValText, { color: theme.muted }]}>
+              <Text className="text-[8px] font-extrabold text-muted">
+                ORIGIN SHIPPED FROM
+              </Text>
+              <Text className="text-[13px] font-extrabold mt-0.5 text-foreground">
+                {shipment.senderName}
+              </Text>
+              <Text className="text-[11px] font-medium mt-0.5 text-muted">
                 {shipment.senderAddress}
               </Text>
             </View>
           </View>
 
-          <View style={[styles.addressConnectorLine, { backgroundColor: theme.border }]} />
+          <View className="absolute left-[17.5px] top-6 bottom-6 w-px bg-border " />
 
-          <View style={styles.addressItem}>
-            <View
-              style={[styles.nodeIndicator, { backgroundColor: theme.info }]}
-            />
+          <View className="flex-row gap-3">
+            <View className="w-2 h-2 rounded-full mt-1.5 bg-[#3B82F6]" />
             <View style={{ flex: 1 }}>
-              <Text style={[styles.addressRole, { color: theme.muted }]}>DELIVERY DESTINATION</Text>
-              <Text style={[styles.addressNameText, { color: theme.text }]}>
+              <Text className="text-[8px] font-extrabold text-muted">
+                DELIVERY DESTINATION
+              </Text>
+              <Text className="text-[13px] font-extrabold mt-0.5 text-foreground">
                 {shipment.recipientName}
               </Text>
-              <Text style={[styles.addressValText, { color: theme.muted }]}>
+              <Text className="text-[11px] font-medium mt-0.5 text-muted">
                 {shipment.recipientAddress}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={[styles.manifestMetricsGrid, { borderColor: theme.border }]}>
-          <View style={styles.manifestMetric}>
-            <Text style={[styles.metricLabel, { color: theme.muted }]}>CATEGORY</Text>
-            <Text style={[styles.metricVal, { color: theme.text }]}>{shipment.packageCategory}</Text>
+        <View className="flex-row border-y-[0.5px] py-3 border-border">
+          <View className="flex-1 gap-1">
+            <Text className="text-[9px] font-extrabold text-muted">
+              CATEGORY
+            </Text>
+            <Text className="text-[13px] font-black text-foreground">
+              {shipment.packageCategory}
+            </Text>
           </View>
-          <View style={styles.manifestMetric}>
-            <Text style={[styles.metricLabel, { color: theme.muted }]}>WEIGHT</Text>
-            <Text style={[styles.metricVal, styles.monoText, { color: theme.text }]}>
+          <View className="flex-1 gap-1">
+            <Text className="text-[9px] font-extrabold text-muted">WEIGHT</Text>
+            <Text className="text-[13px] font-black text-foreground font-mono tabular-nums">
               {shipment.weight} KG
             </Text>
           </View>
-          <View style={styles.manifestMetric}>
-            <Text style={[styles.metricLabel, { color: theme.muted }]}>TARIFF</Text>
-            <Text
-              style={[styles.metricVal, styles.monoText, { color: theme.primary }]}
-            >
+          <View className="flex-1 gap-1">
+            <Text className="text-[9px] font-extrabold text-muted">TARIFF</Text>
+            <Text className="text-[13px] font-black font-mono tabular-nums text-primary">
               ${shipment.price.toFixed(2)}
             </Text>
           </View>
         </View>
 
         {shipment.notes ? (
-          <View style={[styles.instructionsBox, { backgroundColor: theme.mutedBg, borderLeftColor: theme.primary }]}>
-            <Text style={[styles.instructionsHeader, { color: theme.primary }]}>HANDLING INSTRUCTIONS</Text>
-            <Text style={[styles.instructionsText, { color: theme.text }]}>
+          <View className="p-2.5 rounded border-l-2 bg-[#71717A1F] border-l-primary">
+            <Text className="text-[8px] font-extrabold tracking-wider mb-1 text-primary">
+              HANDLING INSTRUCTIONS
+            </Text>
+            <Text className="text-[11px] italic leading-snug text-muted">
               &quot;{shipment.notes}&quot;
             </Text>
           </View>
@@ -221,26 +223,32 @@ export default function ShipmentDetailScreen() {
       </View>
 
       {/* Driver Assigned Card */}
-      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-        <Text style={[styles.sectionHeader, { color: theme.muted }]}>LOGISTICS AGENT</Text>
+      <View className="border rounded-lg p-4 gap-3 bg-card border-border">
+        <Text className="text-[10px] font-black tracking-[1.5px] text-muted">
+          LOGISTICS AGENT
+        </Text>
         {shipment.driverId ? (
-          <View style={styles.agentRow}>
-            <View style={[styles.agentAvatar, { backgroundColor: theme.background, borderColor: theme.border }]}>
-              <Text style={[styles.agentAvatarText, { color: theme.text }]}>MV</Text>
+          <View className="flex-row items-center gap-3 mt-1">
+            <View className="w-11 h-11 rounded-md border items-center justify-center bg-background border-border">
+              <Text className="text-sm font-extrabold text-foreground">MV</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.agentName, { color: theme.text }]}>{shipment.driverName}</Text>
-              <Text style={[styles.agentId, styles.monoText, { color: theme.muted }]}>
+              <Text className="text-sm font-extrabold text-foreground">
+                {shipment.driverName}
+              </Text>
+              <Text className="text-[10px] font-semibold mt-0.5 text-muted font-mono tabular-nums">
                 RIDER ID: {shipment.driverId}
               </Text>
             </View>
-            <View style={[styles.assignedBadge, { backgroundColor: theme.infoBg }]}>
-              <Text style={[styles.assignedBadgeText, { color: theme.info }]}>DISPATCHED</Text>
+            <View className="px-2 py-1 rounded bg-[#3B82F61F] ">
+              <Text className="text-[9px] font-black tracking-wider text-[#60A5FA] ">
+                DISPATCHED
+              </Text>
             </View>
           </View>
         ) : (
-          <View style={styles.unassignedRow}>
-            <Text style={[styles.unassignedText, { color: theme.muted }]}>
+          <View className="py-2">
+            <Text className="text-xs font-semibold italic text-muted">
               UNASSIGNED — Awaiting Rider Dispatch
             </Text>
           </View>
@@ -249,11 +257,11 @@ export default function ShipmentDetailScreen() {
 
       {/* Interactive Driver Override Panels */}
       {isAssignedRider && (
-        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.primary + '44' }]}>
-          <Text style={[styles.sectionHeader, { color: theme.primary }]}>
+        <View className="border rounded-lg p-4 gap-3 bg-card border-primary/30">
+          <Text className="text-[10px] font-black tracking-[1.5px] text-primary">
             COURIER OVERRIDE CONTROLS
           </Text>
-          <Text style={[styles.overrideHelper, { color: theme.muted }]}>
+          <Text className="text-[11px] leading-snug text-muted">
             Update cargo transit steps and broadcast delays to client terminals
             in real-time.
           </Text>
@@ -261,7 +269,7 @@ export default function ShipmentDetailScreen() {
           {/* Action Step trigger */}
           {driverAction ? (
             <Pressable
-              style={[styles.overrideCta, { backgroundColor: theme.primary }]}
+              className="py-3.5 rounded-md flex-row items-center justify-center gap-2 mt-1.5 bg-primary"
               onPress={() =>
                 updateShipmentStatus(
                   shipment.id,
@@ -275,16 +283,18 @@ export default function ShipmentDetailScreen() {
                 size={16}
                 color={theme.primaryText}
               />
-              <Text style={[styles.overrideCtaText, { color: theme.primaryText }]}>{driverAction.label}</Text>
+              <Text className="font-black text-[13px] text-[#18181B]">
+                {driverAction.label}
+              </Text>
             </Pressable>
           ) : (
-            <View style={[styles.nominalFinishBox, { backgroundColor: theme.successBg, borderColor: theme.success }]}>
+            <View className="flex-row items-center justify-center gap-2 border py-3 rounded-md mt-1.5 bg-[#10B9811F] border-success ">
               <IconSymbol
                 name="checkmark.circle.fill"
                 size={16}
                 color={theme.success}
               />
-              <Text style={[styles.nominalFinishText, { color: theme.success }]}>
+              <Text className="text-[11px] font-black tracking-wider text-success">
                 LOGISTICS COMPLETE: ROUTE FULLY RESOLVED
               </Text>
             </View>
@@ -292,11 +302,11 @@ export default function ShipmentDetailScreen() {
 
           {/* Delay reporter */}
           {shipment.status !== "delivered" && (
-            <View style={styles.delayControlsWrapper}>
+            <View className="mt-1.5">
               {!shipment.delayReason ? (
                 <>
                   <Pressable
-                    style={[styles.delayReporterToggle, { backgroundColor: theme.card, borderColor: theme.border }]}
+                    className="border py-2.5 items-center justify-center flex-row gap-2 rounded-md bg-card border-border"
                     onPress={() => setShowDelayPicker(!showDelayPicker)}
                   >
                     <IconSymbol
@@ -304,7 +314,7 @@ export default function ShipmentDetailScreen() {
                       size={14}
                       color={theme.warning}
                     />
-                    <Text style={[styles.delayReporterToggleText, { color: theme.text }]}>
+                    <Text className="text-[11px] font-extrabold text-foreground">
                       {showDelayPicker
                         ? "CLOSE EXCEPTION PANELS"
                         : "REPORT TRANSIT EXCEPTION"}
@@ -312,17 +322,17 @@ export default function ShipmentDetailScreen() {
                   </Pressable>
 
                   {showDelayPicker && (
-                    <View style={[styles.delayOptionsBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
+                    <View className="mt-2 rounded-md border overflow-hidden bg-background border-border">
                       {delayReasons.map((reason) => (
                         <Pressable
                           key={reason}
-                          style={[styles.delayOptionBtn, { borderBottomColor: theme.card }]}
+                          className="py-3 px-4 border-b-[0.5px] border-b-card"
                           onPress={() => {
                             reportDelay(shipment.id, reason);
                             setShowDelayPicker(false);
                           }}
                         >
-                          <Text style={[styles.delayOptionText, { color: theme.muted }]}>
+                          <Text className="text-[11px] font-black tracking-wider text-muted">
                             {reason.toUpperCase()}
                           </Text>
                         </Pressable>
@@ -332,7 +342,7 @@ export default function ShipmentDetailScreen() {
                 </>
               ) : (
                 <Pressable
-                  style={[styles.clearDelayBtn, { backgroundColor: theme.successBg, borderColor: theme.success }]}
+                  className="border py-2.5 rounded-md flex-row items-center justify-center gap-2 bg-[#10B9811F] border-success "
                   onPress={() => clearDelay(shipment.id)}
                 >
                   <IconSymbol
@@ -340,7 +350,7 @@ export default function ShipmentDetailScreen() {
                     size={14}
                     color={theme.success}
                   />
-                  <Text style={[styles.clearDelayBtnText, { color: theme.success }]}>
+                  <Text className="text-[11px] font-black text-success">
                     RESOLVE & CLEAR EXCEPTION
                   </Text>
                 </Pressable>
@@ -351,47 +361,41 @@ export default function ShipmentDetailScreen() {
       )}
 
       {/* Logistics Status logs Timeline */}
-      <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-        <Text style={[styles.sectionHeader, { color: theme.muted }]}>LOGISTICS TRACKING TIMELINE</Text>
+      <View className="border rounded-lg p-4 gap-3 bg-card border-border">
+        <Text className="text-[10px] font-black tracking-[1.5px] text-muted">
+          LOGISTICS TRACKING TIMELINE
+        </Text>
 
-        <View style={styles.timelineList}>
+        <View className="mt-2 gap-0">
           {shipment.statusLogs.map((log, index) => {
             const isLast = index === shipment.statusLogs.length - 1;
             const isDelay = log.status === "delay_reported";
             const isClear = log.status === "delay_cleared";
 
             return (
-              <View key={index} style={styles.timelineItem}>
-                <View style={styles.timelineGraphicColumn}>
+              <View key={index} className="flex-row">
+                <View className="w-6 items-center">
                   <View
-                    style={[
-                      styles.timelineDot, { backgroundColor: theme.border },
-                      isLast && [styles.timelineDotActive, { backgroundColor: theme.primary, boxShadow: '0 0 4px ' + theme.primary }],
-                      isDelay && { backgroundColor: theme.warning },
-                      isClear && { backgroundColor: theme.success },
-                    ]}
+                    className={`${isLast ? "w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_4px_var(--color-primary)]" : "w-2 h-2 rounded-full mt-1.5"} ${!isLast && isDelay ? "bg-warning" : !isLast && isClear ? "bg-success" : !isLast ? "bg-border" : ""}`}
                   />
-                  {!isLast && <View style={[styles.timelineConnector, { backgroundColor: theme.border }]} />}
+                  {!isLast && <View className="w-px flex-1 my-1 bg-border " />}
                 </View>
 
-                <View style={styles.timelineContent}>
-                  <View style={styles.timelineTitleRow}>
+                <View className="flex-1 pb-5 pl-2 gap-1">
+                  <View className="flex-row justify-between items-center">
                     <Text
-                      style={[
-                        styles.timelineStatusTitle, { color: theme.muted },
-                        isLast && [styles.timelineStatusTitleActive, { color: theme.text }],
-                        isDelay && { color: theme.warning },
-                        isClear && { color: theme.success },
-                      ]}
+                      className={`text-xs font-black ${isLast ? "text-foreground" : isDelay ? "text-warning" : isClear ? "text-success" : "text-muted"}`}
                     >
                       {log.status.toUpperCase().replace("_", " ")}
                     </Text>
-                    <Text style={[styles.timelineTimeText, styles.monoText, { color: theme.muted }]}>
+                    <Text className="text-[10px] font-bold font-mono tabular-nums text-muted">
                       {formatTime(log.timestamp)}
                     </Text>
                   </View>
-                  <Text style={[styles.timelineNote, { color: theme.text }]}>{log.note}</Text>
-                  <Text style={[styles.timelineDate, { color: theme.muted }]}>
+                  <Text className="text-[11px] leading-snug text-foreground">
+                    {log.note}
+                  </Text>
+                  <Text className="text-[9px] font-extrabold text-muted">
                     {formatDate(log.timestamp)}
                   </Text>
                 </View>
@@ -403,420 +407,3 @@ export default function ShipmentDetailScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#18181B",
-  },
-  contentContainer: {
-    padding: 16,
-    gap: 16,
-    paddingBottom: 40,
-  },
-  errorContainer: {
-    flex: 1,
-    backgroundColor: "#18181B",
-    padding: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-  },
-  errorTitle: {
-    color: "#EF4444",
-    fontSize: 16,
-    fontWeight: "900",
-    letterSpacing: 1,
-    textAlign: "center",
-  },
-  errorText: {
-    color: "#71717A",
-    fontSize: 12,
-    fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 18,
-    paddingHorizontal: 24,
-  },
-  backBtn: {
-    backgroundColor: "#27272A",
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 6,
-  },
-  backBtnText: {
-    color: "#CCFF00",
-    fontSize: 12,
-    fontWeight: "800",
-  },
-  alertBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "#EAB3081A",
-    borderWidth: 1,
-    borderColor: "#EAB30833",
-    padding: 14,
-    borderRadius: 8,
-  },
-  alertTextWrapper: {
-    flex: 1,
-    gap: 2,
-  },
-  alertTitle: {
-    color: "#EAB308",
-    fontSize: 12,
-    fontWeight: "900",
-    letterSpacing: 1,
-  },
-  alertSubtitle: {
-    color: "#EAB308BF",
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  card: {
-    backgroundColor: "#27272A",
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    borderRadius: 8,
-    borderCurve: "continuous",
-    padding: 16,
-    gap: 12,
-  },
-  cardHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  sectionHeader: {
-    fontSize: 10,
-    fontWeight: "900",
-    color: "#71717A",
-    letterSpacing: 1.5,
-  },
-  manifestId: {
-    fontSize: 22,
-    fontWeight: "900",
-    color: "#FAFAFA",
-    marginTop: 4,
-  },
-  tagBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  tagNominal: { backgroundColor: "#10B9811F" },
-  tagWarning: { backgroundColor: "#EF44441F" },
-  tagText: {
-    fontSize: 9,
-    fontWeight: "900",
-    letterSpacing: 0.5,
-  },
-  tagTextNominal: { color: "#10B981" },
-  tagTextWarning: { color: "#EF4444" },
-  addressBox: {
-    backgroundColor: "#18181B",
-    padding: 14,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    gap: 10,
-    position: "relative",
-  },
-  addressItem: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  nodeIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 5,
-  },
-  addressRole: {
-    fontSize: 8,
-    fontWeight: "800",
-    color: "#71717A",
-  },
-  addressNameText: {
-    fontSize: 13,
-    fontWeight: "800",
-    color: "#FAFAFA",
-    marginTop: 2,
-  },
-  addressValText: {
-    fontSize: 11,
-    color: "#A1A1AA",
-    fontWeight: "500",
-    marginTop: 1,
-  },
-  addressConnectorLine: {
-    position: "absolute",
-    left: 17.5,
-    top: 24,
-    bottom: 24,
-    width: 1,
-    backgroundColor: "#3F3F46",
-  },
-  manifestMetricsGrid: {
-    flexDirection: "row",
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
-    borderColor: "#3F3F46",
-    paddingVertical: 12,
-  },
-  manifestMetric: {
-    flex: 1,
-    gap: 4,
-  },
-  metricLabel: {
-    fontSize: 9,
-    fontWeight: "800",
-    color: "#71717A",
-  },
-  metricVal: {
-    fontSize: 13,
-    fontWeight: "900",
-    color: "#FAFAFA",
-  },
-  instructionsBox: {
-    backgroundColor: "#18181B4D",
-    padding: 10,
-    borderRadius: 4,
-    borderLeftWidth: 2,
-    borderLeftColor: "#CCFF00",
-  },
-  instructionsHeader: {
-    fontSize: 8,
-    fontWeight: "800",
-    color: "#CCFF00",
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  instructionsText: {
-    fontSize: 11,
-    color: "#A1A1AA",
-    fontStyle: "italic",
-    lineHeight: 14,
-  },
-  agentRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginTop: 4,
-  },
-  agentAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 6,
-    backgroundColor: "#27272A",
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  agentAvatarText: {
-    color: "#FAFAFA",
-    fontSize: 14,
-    fontWeight: "800",
-  },
-  agentName: {
-    fontSize: 14,
-    fontWeight: "800",
-    color: "#FAFAFA",
-  },
-  agentId: {
-    fontSize: 10,
-    color: "#71717A",
-    fontWeight: "600",
-    marginTop: 2,
-  },
-  assignedBadge: {
-    backgroundColor: "#3B82F61F",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  assignedBadgeText: {
-    color: "#60A5FA",
-    fontSize: 9,
-    fontWeight: "900",
-    letterSpacing: 0.5,
-  },
-  unassignedRow: {
-    paddingVertical: 8,
-  },
-  unassignedText: {
-    color: "#71717A",
-    fontSize: 12,
-    fontWeight: "600",
-    fontStyle: "italic",
-  },
-  overrideHelper: {
-    fontSize: 11,
-    color: "#71717A",
-    lineHeight: 15,
-  },
-  overrideCta: {
-    backgroundColor: "#CCFF00",
-    paddingVertical: 14,
-    borderRadius: 6,
-    borderCurve: "continuous",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 6,
-  },
-  overrideCtaText: {
-    color: "#18181B",
-    fontWeight: "900",
-    fontSize: 13,
-  },
-  nominalFinishBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    backgroundColor: "#10B9811F",
-    borderWidth: 1,
-    borderColor: "#10B98133",
-    paddingVertical: 12,
-    borderRadius: 6,
-    marginTop: 6,
-  },
-  nominalFinishText: {
-    color: "#10B981",
-    fontSize: 11,
-    fontWeight: "900",
-    letterSpacing: 0.5,
-  },
-  delayControlsWrapper: {
-    marginTop: 6,
-  },
-  delayReporterToggle: {
-    backgroundColor: "#27272A",
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    paddingVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    gap: 8,
-    borderRadius: 6,
-  },
-  delayReporterToggleText: {
-    color: "#FAFAFA",
-    fontSize: 11,
-    fontWeight: "800",
-  },
-  delayOptionsBox: {
-    marginTop: 8,
-    backgroundColor: "#18181B",
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "#3F3F46",
-    overflow: "hidden",
-  },
-  delayOptionBtn: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#27272A",
-  },
-  delayOptionText: {
-    color: "#71717A",
-    fontSize: 11,
-    fontWeight: "900",
-    letterSpacing: 0.5,
-  },
-  clearDelayBtn: {
-    backgroundColor: "#10B9811F",
-    borderWidth: 1,
-    borderColor: "#10B981",
-    paddingVertical: 10,
-    borderRadius: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  clearDelayBtnText: {
-    color: "#10B981",
-    fontSize: 11,
-    fontWeight: "900",
-  },
-  timelineList: {
-    marginTop: 8,
-    gap: 0,
-  },
-  timelineItem: {
-    flexDirection: "row",
-  },
-  timelineGraphicColumn: {
-    width: 24,
-    alignItems: "center",
-  },
-  timelineDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#3F3F46",
-    marginTop: 6,
-  },
-  timelineDotActive: {
-    backgroundColor: "#CCFF00",
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    boxShadow: "0 0 4px #CCFF00",
-  },
-  timelineConnector: {
-    width: 1,
-    flex: 1,
-    backgroundColor: "#3F3F46",
-    marginVertical: 4,
-  },
-  timelineContent: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingLeft: 8,
-    gap: 4,
-  },
-  timelineTitleRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  timelineStatusTitle: {
-    fontSize: 12,
-    fontWeight: "900",
-    color: "#71717A",
-  },
-  timelineStatusTitleActive: {
-    color: "#FAFAFA",
-  },
-  timelineTimeText: {
-    fontSize: 9,
-    color: "#71717A",
-    fontWeight: "700",
-  },
-  timelineNote: {
-    fontSize: 11,
-    color: "#A1A1AA",
-    fontWeight: "500",
-    lineHeight: 14,
-  },
-  timelineDate: {
-    fontSize: 8,
-    color: "#71717A",
-    fontWeight: "700",
-    marginTop: 2,
-  },
-  monoText: {
-    fontFamily: Platform.OS === "ios" ? "Courier New" : "monospace",
-    fontVariant: ["tabular-nums"],
-  },
-});

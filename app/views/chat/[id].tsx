@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   View, Text, TextInput, Pressable, ScrollView, 
-  StyleSheet, KeyboardAvoidingView, Platform 
+   KeyboardAvoidingView, Platform 
 } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useLogiTrack } from '@/store/logitrack-store';
@@ -25,8 +25,8 @@ export default function ChatRoomScreen() {
 
   if (!shipment) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.background }]}>
-        <Text style={[styles.errorText, { color: theme.danger }]}>Comms channel not found.</Text>
+      <View className="flex-1 bg-background bg-background">
+        <Text className="text-center mt-10 font-extrabold text-danger text-danger">Comms channel not found.</Text>
       </View>
     );
   }
@@ -40,7 +40,7 @@ export default function ChatRoomScreen() {
 
   return (
     <KeyboardAvoidingView 
-      style={[styles.container, { backgroundColor: theme.background }]} 
+      className="flex-1 bg-background bg-background" 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
@@ -55,12 +55,12 @@ export default function ChatRoomScreen() {
 
       <ScrollView 
         ref={scrollViewRef}
-        style={styles.messagesList}
-        contentContainerStyle={styles.messagesContent}
+        className="flex-1"
+        contentContainerClassName="p-4 gap-3"
       >
         {messages.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { color: theme.muted }]}>End-to-end encrypted channel established.</Text>
+          <View className="align-center mt-10">
+            <Text className="text-xs font-bold text-muted text-muted">End-to-end encrypted channel established.</Text>
           </View>
         ) : (
           messages.map((msg) => {
@@ -68,18 +68,12 @@ export default function ChatRoomScreen() {
             return (
               <View 
                 key={msg.id} 
-                style={[
-                  styles.messageBubble, 
-                  isMe ? [styles.messageBubbleMe, { backgroundColor: theme.primary }] : [styles.messageBubbleOther, { backgroundColor: theme.card, borderColor: theme.border }]
-                ]}
+                className={`max-w-[80%] p-3 rounded-lg ${isMe ? "self-end bg-primary" : "self-start border bg-card border-border"}`}
               >
-                <Text style={[
-                  styles.messageText,
-                  isMe ? [styles.messageTextMe, { color: theme.primaryText }] : [styles.messageTextOther, { color: theme.text }]
-                ]}>
+                <Text className={`text-sm font-semibold ${isMe ? 'text-[#18181B]' : 'text-foreground'}`}>
                   {msg.text}
                 </Text>
-                <Text style={[styles.messageTime, { color: theme.muted }]}>
+                <Text className="text-[9px] font-extrabold mt-1 self-end text-muted text-muted">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
               </View>
@@ -88,9 +82,9 @@ export default function ChatRoomScreen() {
         )}
       </ScrollView>
 
-      <View style={[styles.inputContainer, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
+      <View className="flex-row p-3 gap-2 border-t bg-card border-border bg-card border-border">
         <TextInput
-          style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]}
+          className="flex-1 border rounded-full px-4 py-2.5 text-sm font-semibold bg-background border-border text-foreground bg-background border-border text-foreground"
           value={inputText}
           onChangeText={setInputText}
           placeholder="Transmit message..."
@@ -98,7 +92,7 @@ export default function ChatRoomScreen() {
           onSubmitEditing={handleSend}
         />
         <Pressable 
-          style={[styles.sendButton, { backgroundColor: theme.primary }, !inputText.trim() && [styles.sendButtonDisabled, { backgroundColor: theme.card }]]} 
+          className={`w-10 h-10 rounded-full items-center justify-center ${!inputText.trim() ? 'bg-card' : 'bg-primary'}`} 
           onPress={handleSend}
           disabled={!inputText.trim()}
         >
@@ -109,79 +103,3 @@ export default function ChatRoomScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  errorText: {
-    textAlign: 'center',
-    marginTop: 40,
-    fontWeight: '800',
-  },
-  messagesList: {
-    flex: 1,
-  },
-  messagesContent: {
-    padding: 16,
-    gap: 12,
-  },
-  emptyState: {
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  emptyText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  messageBubble: {
-    maxWidth: '80%',
-    padding: 12,
-    borderRadius: 8,
-    borderCurve: 'continuous',
-  },
-  messageBubbleMe: {
-    alignSelf: 'flex-end',
-  },
-  messageBubbleOther: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-  },
-  messageText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  messageTextMe: {
-  },
-  messageTextOther: {
-  },
-  messageTime: {
-    fontSize: 9,
-    fontWeight: '800',
-    marginTop: 4,
-    alignSelf: 'flex-end',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 12,
-    gap: 8,
-    borderTopWidth: 1,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sendButtonDisabled: {
-  },
-});
